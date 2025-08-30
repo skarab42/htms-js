@@ -11,5 +11,8 @@
     "prettier": "^3.6.2"
   },
   "packageManager": "pnpm@10.15.0",
-  "prettier": "@skarab/prettier-config"
+  "prettier": "@skarab/prettier-config",
+  "engines": {
+    "node": ">=24.7.0"
+  }
 }
