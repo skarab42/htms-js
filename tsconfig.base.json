@@ -1,0 +1,53 @@
+{
+  "include": [],
+  "exclude": [],
+  "compilerOptions": {
+    // Emit & Maps
+    "noEmit": true,
+    "noEmitOnError": true,
+    "removeComments": true,
+    "listEmittedFiles": true,
+    "declaration": true,
+    "declarationMap": false,
+    "sourceMap": false,
+    "tsBuildInfoFile": ".tsbuildinfo",
+
+    // Language & Syntax
+    "target": "esnext",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "allowJs": false,
+    "checkJs": false,
+    "verbatimModuleSyntax": true,
+    "allowArbitraryExtensions": false,
+
+    // Modules & Resolution
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "auto",
+    "resolveJsonModule": true,
+    "types": ["node"],
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+
+    // Type Checking Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "useUnknownInCatchVariables": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noErrorTruncation": true,
+
+    // Declarations/IDE
+    "isolatedDeclarations": true
+  }
+}

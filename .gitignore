@@ -1,3 +1,7 @@
 /.idea
 
+dist
+coverage
 node_modules
+
+*.tsbuildinfo

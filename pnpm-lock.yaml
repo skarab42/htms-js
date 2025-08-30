@@ -11,9 +11,15 @@ importers:
       '@skarab/prettier-config':
         specifier: ^1.2.2
         version: 1.2.2(prettier@3.6.2)
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.3.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
 
 packages:
 
@@ -22,10 +28,21 @@ packages:
     peerDependencies:
       prettier: '>=2'
 
+  '@types/node@24.3.0':
+    resolution: {integrity: sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow==}
+
   prettier@3.6.2:
     resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
     engines: {node: '>=14'}
     hasBin: true
+
+  typescript@5.9.2:
+    resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  undici-types@7.10.0:
+    resolution: {integrity: sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag==}
 
 snapshots:
 
@@ -33,4 +50,12 @@ snapshots:
     dependencies:
       prettier: 3.6.2
 
+  '@types/node@24.3.0':
+    dependencies:
+      undici-types: 7.10.0
+
   prettier@3.6.2: {}
+
+  typescript@5.9.2: {}
+
+  undici-types@7.10.0: {}
