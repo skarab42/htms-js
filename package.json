@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "htms-js-woprkspace",
+  "scripts": {
+    "format": "prettier **/* --ignore-unknown",
+    "format:check": "pnpm format --check",
+    "format:write": "pnpm format --write"
+  },
+  "devDependencies": {
+    "@skarab/prettier-config": "^1.2.2",
+    "prettier": "^3.6.2"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "prettier": "@skarab/prettier-config"
+}
