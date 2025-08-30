@@ -2,15 +2,25 @@
   "private": true,
   "name": "htms-js-woprkspace",
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier **/* --ignore-unknown",
     "format:check": "pnpm format --check",
     "format:write": "pnpm format --write"
   },
   "devDependencies": {
+    "@eslint/js": "^9.34.0",
     "@skarab/prettier-config": "^1.2.2",
     "@types/node": "^24.3.0",
+    "eslint": "^9.34.0",
+    "eslint-config-flat-gitignore": "^2.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unicorn": "^60.0.0",
+    "globals": "^16.3.0",
     "prettier": "^3.6.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.41.0"
   },
   "packageManager": "pnpm@10.15.0",
   "prettier": "@skarab/prettier-config",
