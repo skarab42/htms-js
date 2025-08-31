@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { createFileStream, createHtmsSerializer, createHtmsTokenizer } from '../src';
+import { createFileStream, createHtmsSerializer, createHtmsTokenizer, createStringStream } from '../src';
 import { createHtmsResolver, type Resolver } from '../src/stream/resolver';
 import { mockRandomUUIDIncrement } from './fixtures/crypto.mock';
 import { collectString } from './fixtures/stream.helpers';
@@ -92,6 +92,37 @@ describe('createHtmsSerializer', () => {
       <script data-htms-remove-on-cleanup>htms.cleanup()</script>
       </body>
       </html>"
+    `);
+  });
+
+  it('should serialize a simple html file with [data-htms] attribute', async () => {
+    mockRandomUUIDIncrement();
+
+    const html = '<div data-htms="goodTask"/>\n<div data-htms="badTask"/>\n';
+    const input = createStringStream(html);
+    const resolver: Resolver = {
+      resolve(info) {
+        return () => {
+          if (info.name === 'badTask') {
+            throw new Error(`Oupsy! Something wrong append in this task: ${info.name}`);
+          }
+
+          return Promise.resolve(`good task done: ${info.name}`);
+        };
+      },
+    };
+
+    const output = input
+      .pipeThrough(createHtmsTokenizer())
+      .pipeThrough(createHtmsResolver(resolver))
+      .pipeThrough(createHtmsSerializer());
+
+    expect(await collectString(output)).toMatchInlineSnapshot(`
+      "<div data-htms="goodTask" data-htms-uuid="uuid-test-0000-0000-mock"/>
+      <div data-htms="badTask" data-htms-uuid="uuid-test-0000-0001-mock"/>
+      <htms-chunk uuid="uuid-test-0000-0001-mock"></htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock">good task done: goodTask</htms-chunk>
+      "
     `);
   });
 });

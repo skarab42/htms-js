@@ -50,7 +50,9 @@ async function runTask(token: TaskToken, controller: Controller): Promise<void> 
 
     controller.enqueue(`<htms-chunk uuid="${token.uuid}">${output}</htms-chunk>\n`);
   } catch (error) {
-    controller.error(error);
+    controller.enqueue(`<htms-chunk uuid="${token.uuid}"></htms-chunk>\n`);
+    // TODO: call `controller.error(error)` on dev mode!?
+    console.error(`unknown error from task [uuid=${token.uuid}, name=${token.name}]\n${error}`);
   }
 }
 

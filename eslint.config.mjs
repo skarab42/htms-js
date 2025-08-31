@@ -8,7 +8,7 @@ import globals from 'globals';
 import ts from 'typescript-eslint';
 
 export default defineConfig([
-  gitignore(),
+  { ignores: [...gitignore().ignores, 'vitest.config.ts'] },
   { linterOptions: { reportUnusedInlineConfigs: 'warn' } },
   js.configs.recommended,
   unicorn.configs.recommended,
