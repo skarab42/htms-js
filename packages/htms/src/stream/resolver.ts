@@ -2,7 +2,7 @@ import { TransformStream } from 'node:stream/web';
 
 import type { TaskInfo, Token } from './tokenizer';
 
-export type Task = () => Promise<string>;
+export type Task = () => PromiseLike<string>;
 
 export interface TaskToken extends TaskInfo {
   type: 'task';
@@ -10,9 +10,10 @@ export interface TaskToken extends TaskInfo {
 }
 
 export type ResolverToken = Token | TaskToken;
+export type ResolveTask = Task | PromiseLike<Task>;
 
 export interface Resolver {
-  resolve(info: TaskInfo): Task;
+  resolve(info: TaskInfo): ResolveTask;
 }
 
 export function createTaskToken(info: TaskInfo, task: Task): TaskToken {
@@ -27,13 +28,13 @@ export function createHtmsResolver(resolver: Resolver): TransformStream<Token, R
   const taskTokens: TaskToken[] = [];
 
   return new TransformStream({
-    transform(token, controller) {
+    async transform(token, controller) {
       controller.enqueue(token);
 
       if (token.type === 'htmsTag') {
         try {
           const taskInfo = token.taskInfo;
-          const task = resolver.resolve(taskInfo);
+          const task = await resolver.resolve(taskInfo);
 
           if (typeof task === 'function') {
             taskTokens.push(createTaskToken(taskInfo, task));
