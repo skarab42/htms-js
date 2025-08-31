@@ -11,3 +11,11 @@ vi.mock('node:crypto', async () => {
 export function mockRandomUUIDOnce(uuid: UUID): void {
   (randomUUID as Mock).mockReturnValueOnce(uuid);
 }
+
+export function mockRandomUUIDIncrement(from = 0): void {
+  let count = from;
+
+  (randomUUID as Mock).mockImplementation(() => {
+    return `uuid-test-0000-${(count++).toString().padStart(4, '0')}-mock`;
+  });
+}
