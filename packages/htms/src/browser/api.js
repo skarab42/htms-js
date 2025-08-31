@@ -6,20 +6,20 @@
         const uuid = this.getAttribute('uuid');
 
         if (!uuid) {
-          console.warn('[htms-chunk] undefined uuid attribute:', this);
+          console.warn("[htms-chunk] missing 'uuid' attribute:", this);
           return;
         }
 
         const selector = `[data-htms-uuid="${uuid}"]`;
-        const element = document.querySelector(selector);
+        const targetElement = document.querySelector(selector);
 
-        if (!element) {
-          console.warn('[htms-chunk] element not found with selector:', selector);
+        if (!targetElement) {
+          console.warn(`[htms-chunk] target element not found with selector '${selector}'`);
           return;
         }
 
         requestAnimationFrame(() => {
-          element.outerHTML = this.innerHTML;
+          targetElement.outerHTML = this.innerHTML;
           this.remove();
         });
       }
