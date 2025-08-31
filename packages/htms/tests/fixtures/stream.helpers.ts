@@ -9,3 +9,9 @@ export async function collect<T>(stream: ReadableStream<T>): Promise<T[]> {
 
   return chunks;
 }
+
+export async function collectString(stream: ReadableStream): Promise<string> {
+  const output = await collect(stream);
+
+  return output.join('');
+}

@@ -27,7 +27,9 @@
   ],
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "pnpm clean && tsc -p ./tsconfig.build.json",
+    "build:js": "tsc -p ./tsconfig.build-js.json",
+    "build:ts": "tsc -p ./tsconfig.build-ts.json",
+    "build": "pnpm clean && pnpm build:js && pnpm build:ts",
     "build:check": "tsc -p ./tsconfig.json",
     "build:watch": "pnpm build --watch"
   },
