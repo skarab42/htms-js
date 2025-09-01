@@ -45,7 +45,9 @@ export function findAttribute(tag: StartTag, name: string): Attribute | undefine
   return tag.attrs.find((attribute) => attribute.name === name);
 }
 
-export function createHtmsTokenizer(): TransformStream<string | Buffer, Token> {
+export type TokenizerStream = TransformStream<string | Buffer, Token>;
+
+export function createHtmsTokenizer(): TokenizerStream {
   const rewriter = new RewritingStream();
 
   return new TransformStream({

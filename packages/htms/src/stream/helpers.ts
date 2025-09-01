@@ -1,10 +1,56 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import { ReadableStream } from 'node:stream/web';
 
-export function createStringStream(input: string | string[]): ReadableStream<string> {
+import { ModuleResolver } from '../resolvers';
+import { createHtmsResolver, type Resolver } from './resolver';
+import { createHtmsSerializer } from './serializer';
+import { createHtmsTokenizer } from './tokenizer';
+
+export type IOStream = ReadableStream<string>;
+
+export function createStringStream(input: string | string[]): IOStream {
   return ReadableStream.from(input);
 }
 
-export function createFileStream(input: string): ReadableStream<string> {
-  return ReadableStream.from(fs.createReadStream(input, { encoding: 'utf8' }));
+export function createFileStream(filePath: string): IOStream {
+  return ReadableStream.from(fs.createReadStream(filePath, { encoding: 'utf8' }));
+}
+
+export function createHtmsPipeline(inputStream: IOStream, resolver: Resolver): IOStream {
+  return inputStream
+    .pipeThrough(createHtmsTokenizer())
+    .pipeThrough(createHtmsResolver(resolver))
+    .pipeThrough(createHtmsSerializer());
+}
+
+export function createHtmsStringPipeline(rawHtml: string, resolver: Resolver): IOStream {
+  return createHtmsPipeline(createStringStream(rawHtml), resolver);
+}
+
+export function createHtmsFilePipeline(filePath: string, resolver: Resolver): IOStream {
+  return createHtmsPipeline(createFileStream(filePath), resolver);
+}
+
+export interface ModulePipelineOptions {
+  specifier?: string | undefined;
+  extension?: 'js' | 'cjs' | 'mjs' | 'ts' | 'cts' | 'mts' | '' | undefined;
+}
+
+export function createHtmsStringModulePipeline(rawHtml: string, moduleSpecifier: string): IOStream {
+  return createHtmsStringPipeline(rawHtml, new ModuleResolver(moduleSpecifier));
+}
+
+export function createHtmsFileModulePipeline(filePath: string, options?: ModulePipelineOptions | undefined): IOStream {
+  const moduleSpecifier = options?.specifier ?? changeExtension(filePath, options?.extension ?? 'js');
+
+  return createHtmsFilePipeline(filePath, new ModuleResolver(moduleSpecifier));
+}
+
+function changeExtension(filePath: string, extension: string): string {
+  return path.format({
+    ...path.parse(filePath),
+    base: undefined,
+    ext: extension.startsWith('.') ? extension : '.' + extension,
+  });
 }

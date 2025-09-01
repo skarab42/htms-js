@@ -58,7 +58,9 @@ async function runTask(token: TaskToken, controller: Controller): Promise<void> 
 
 const cleanEndTag = new Set(['html', 'body']);
 
-export function createHtmsSerializer(): TransformStream<ResolverToken, string> {
+export type SerializerStream = TransformStream<ResolverToken, string>;
+
+export function createHtmsSerializer(): SerializerStream {
   const seenEndTags = new Set<string>();
   const taskTokens: TaskToken[] = [];
 

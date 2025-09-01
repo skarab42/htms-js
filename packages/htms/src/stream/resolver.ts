@@ -24,7 +24,9 @@ export function createTaskToken(info: TaskInfo, task: Task): TaskToken {
   };
 }
 
-export function createHtmsResolver(resolver: Resolver): TransformStream<Token, ResolverToken> {
+export type ResolverStream = TransformStream<Token, ResolverToken>;
+
+export function createHtmsResolver(resolver: Resolver): ResolverStream {
   const taskTokens: TaskToken[] = [];
 
   return new TransformStream({

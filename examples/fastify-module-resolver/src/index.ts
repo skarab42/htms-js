@@ -20,6 +20,9 @@ server.get('/', (_request, reply) => {
     .pipeThrough(createHtmsResolver(resolver))
     .pipeThrough(createHtmsSerializer());
 
+  // or you can use the following line as a shortcut
+  // const stream = createHtmsFileModulePipeline('./src/pages/index.html', { extension: 'ts' });
+
   Readable.fromWeb(stream).pipe(reply.raw);
 });
 
