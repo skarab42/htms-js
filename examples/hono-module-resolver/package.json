@@ -1,0 +1,16 @@
+{
+  "name": "hono-module-resolver",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.0",
+    "hono": "^4.9.4",
+    "htms-js": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3"
+  }
+}
