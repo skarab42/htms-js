@@ -8,7 +8,7 @@ const server = Fastify();
 server.get('/', (_request, reply) => {
   reply.header('Content-Type', 'text/html; charset=utf-8');
 
-  createHtmsFileModulePipeline('./src/pages/index.html', { extension: 'ts' }).pipeTo(Writable.toWeb(reply.raw));
+  createHtmsFileModulePipeline('../_pages/index.html', { extension: 'ts' }).pipeTo(Writable.toWeb(reply.raw));
 });
 
 await server.listen({ port: 4200 });

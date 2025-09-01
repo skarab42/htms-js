@@ -9,9 +9,9 @@ import {
   ModuleResolver,
 } from 'htms-js';
 
-const resolver = new ModuleResolver('./src/pages/index.ts');
+const resolver = new ModuleResolver('../_pages/index.ts');
 
-createFileStream('./src/pages/index.html')
+createFileStream('../_pages/index.html')
   .pipeThrough(createHtmsTokenizer())
   .pipeThrough(createHtmsResolver(resolver))
   .pipeThrough(createHtmsSerializer())
