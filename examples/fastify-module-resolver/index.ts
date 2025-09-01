@@ -11,6 +11,6 @@ server.get('/', (_request, reply) => {
   createHtmsFileModulePipeline('../_pages/index.html', { extension: 'ts' }).pipeTo(Writable.toWeb(reply.raw));
 });
 
-await server.listen({ port: 4200 });
-
-console.log(`Fastify listening on http://localhost:4200`);
+server.listen({ port: 4200 }, () => {
+  console.log(`Fastify listening on http://localhost:4200`);
+});
