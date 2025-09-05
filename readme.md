@@ -78,12 +78,10 @@ Visit `http://localhost:3000`: content renders immediately, then fills itself in
 
 ## 📂 Examples
 
-- [Express](examples/express-module-resolver/index.ts)
-- [Fastify](examples/fastify-module-resolver/index.ts)
-- [Hono](examples/hono-module-resolver/index.ts)
-- [Raw streaming](examples/stdout-module-resolver/index.ts)
+- [Express](examples/express/index.ts), [Fastify](examples/fastify/index.ts), [Hono](examples/hono/index.ts)
+- [Raw streaming](examples/stdout/index.ts) (stdout)
 
-Run `pnpm run examples` to try them.
+Run `pnpm --filter (express|fastify|hono|stdout)-example start` to try them.
 
 ---
 
@@ -192,13 +190,13 @@ export interface Resolver {
 }
 ```
 
-### Example: `InlineResolver`
+### Example: `MapResolver`
 
 ```ts
 import { createFileStream, createHtmsTokenizer, createHtmsResolver, createHtmsSerializer } from 'htms-js';
 import { Writable } from 'node:stream';
 
-class InlineResolver {
+class MapResolver {
   #map = new Map<string, () => Promise<string>>([
     [
       'foo',
@@ -225,9 +223,9 @@ class InlineResolver {
   }
 }
 
-await createFileStream('./_pages/index.html')
+await createFileStream('./index.html')
   .pipeThrough(createHtmsTokenizer())
-  .pipeThrough(createHtmsResolver(new InlineResolver()))
+  .pipeThrough(createHtmsResolver(new MapResolver()))
   .pipeThrough(createHtmsSerializer())
   .pipeTo(Writable.toWeb(process.stdout));
 ```

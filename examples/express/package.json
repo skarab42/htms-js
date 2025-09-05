@@ -1,13 +1,12 @@
 {
-  "name": "hono-module-resolver",
+  "name": "express-example",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "tsx index.ts"
   },
   "dependencies": {
-    "@hono/node-server": "^1.19.0",
-    "hono": "^4.9.4",
+    "express": "^5.1.0",
     "htms-js": "workspace:*"
   },
   "devDependencies": {

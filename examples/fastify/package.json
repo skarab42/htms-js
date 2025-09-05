@@ -1,15 +1,12 @@
 {
-  "name": "express-module-resolver",
+  "name": "fastify-example",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "tsx index.ts"
   },
   "dependencies": {
-    "express": "^5.1.0",
+    "fastify": "^5.5.0",
     "htms-js": "workspace:*"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.3"
   }
 }
