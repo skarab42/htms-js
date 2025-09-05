@@ -1,0 +1,47 @@
+{
+  "private": true,
+  "name": "fastify-htms",
+  "description": "HTMS 💨 Stream Async HTML, Stay SEO-Friendly",
+  "version": "0.0.0-development",
+  "license": "MIT",
+  "author": {
+    "name": "skarab42",
+    "email": "skarab@bluewin.ch"
+  },
+  "funding": "https://github.com/sponsors/skarab42",
+  "homepage": "https://github.com/skarab42/htms-js",
+  "repository": "https://github.com/skarab42/htms-js",
+  "bugs": "https://github.com/skarab42/htms-js/issues",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "build": "pnpm clean && tsc -p ./tsconfig.build.json",
+    "build:check": "tsc -p ./tsconfig.json",
+    "build:watch": "pnpm build --watch"
+  },
+  "dependencies": {
+    "fastify": "^5.5.0",
+    "fastify-plugin": "^5.0.1",
+    "htms-js": "workspace:*",
+    "minimatch": "^10.0.3"
+  },
+  "keywords": [
+    "fastify",
+    "stream",
+    "async",
+    "html",
+    "seo"
+  ]
+}

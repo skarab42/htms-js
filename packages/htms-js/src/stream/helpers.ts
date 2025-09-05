@@ -41,10 +41,16 @@ export function createHtmsStringModulePipeline(rawHtml: string, moduleSpecifier:
   return createHtmsStringPipeline(rawHtml, new ModuleResolver(moduleSpecifier));
 }
 
-export function createHtmsFileModulePipeline(filePath: string, options?: ModulePipelineOptions | undefined): IOStream {
-  const moduleSpecifier = options?.specifier ?? changeExtension(filePath, options?.extension ?? 'js');
+export function createModuleSpecifier(filePath: string, options?: ModulePipelineOptions | undefined): string {
+  return options?.specifier ?? changeExtension(filePath, options?.extension ?? 'js');
+}
 
-  return createHtmsFilePipeline(filePath, new ModuleResolver(moduleSpecifier));
+export function createModuleResolver(filePath: string, options?: ModulePipelineOptions | undefined): ModuleResolver {
+  return new ModuleResolver(createModuleSpecifier(filePath, options));
+}
+
+export function createHtmsFileModulePipeline(filePath: string, options?: ModulePipelineOptions | undefined): IOStream {
+  return createHtmsFilePipeline(filePath, createModuleResolver(filePath, options));
 }
 
 function changeExtension(filePath: string, extension: string): string {
