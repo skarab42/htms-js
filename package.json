@@ -11,7 +11,8 @@
     "format:ci": "pnpm format --check",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "build": "pnpm -r build"
+    "build": "pnpm -r build",
+    "reset": "rimraf --glob **/node_modules **/dist ./pnpm-lock.yaml"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
