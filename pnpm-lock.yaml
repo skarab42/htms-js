@@ -60,29 +60,29 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.3.0)(jsdom@26.1.0)(tsx@4.20.5)
 
-  examples/express-module-resolver:
+  examples/express:
     dependencies:
       express:
         specifier: ^5.1.0
         version: 5.1.0
       htms-js:
         specifier: workspace:*
-        version: link:../../packages/htms
+        version: link:../../packages/htms-js
     devDependencies:
       '@types/express':
         specifier: ^5.0.3
         version: 5.0.3
 
-  examples/fastify-module-resolver:
+  examples/fastify:
     dependencies:
       fastify:
         specifier: ^5.5.0
         version: 5.5.0
       htms-js:
         specifier: workspace:*
-        version: link:../../packages/htms
+        version: link:../../packages/htms-js
 
-  examples/hono-module-resolver:
+  examples/hono:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.0
@@ -92,19 +92,19 @@ importers:
         version: 4.9.5
       htms-js:
         specifier: workspace:*
-        version: link:../../packages/htms
+        version: link:../../packages/htms-js
     devDependencies:
       '@types/express':
         specifier: ^5.0.3
         version: 5.0.3
 
-  examples/stdout-module-resolver:
+  examples/stdout:
     dependencies:
       htms-js:
         specifier: workspace:*
-        version: link:../../packages/htms
+        version: link:../../packages/htms-js
 
-  packages/htms:
+  packages/htms-js:
     dependencies:
       entities:
         specifier: ^6.0.1
