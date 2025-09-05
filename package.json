@@ -2,6 +2,7 @@
   "private": true,
   "name": "htms-js-woprkspace",
   "scripts": {
+    "prepare": "npx simple-git-hooks",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
     "lint:ci": "pnpm lint --max-warnings=0",
@@ -24,8 +25,10 @@
     "eslint-plugin-unicorn": "^60.0.0",
     "globals": "^16.3.0",
     "jsdom": "^26.1.0",
+    "lint-staged": "^16.1.6",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
+    "simple-git-hooks": "^2.13.1",
     "tsx": "^4.20.4",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.41.0",
@@ -33,6 +36,15 @@
   },
   "packageManager": "pnpm@10.15.1",
   "prettier": "@skarab/prettier-config",
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": [
+      "pnpm prettier --write --ignore-unknown",
+      "pnpm eslint --fix --no-warn-ignored --max-warnings=0"
+    ]
+  },
   "engines": {
     "node": ">=24.7.0"
   }
