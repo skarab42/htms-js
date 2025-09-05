@@ -98,18 +98,24 @@ export function createHtmsSerializer(): SerializerStream {
       }
     },
     async flush(controller) {
-      await Promise.allSettled(taskTokens.map((token) => runTask(token, controller)));
-
-      if (seenEndTags.has('body')) {
-        controller.enqueue('<script data-htms-remove-on-cleanup>htms.cleanup()</script>\n');
-        controller.enqueue('</body>\n');
+      if (taskTokens.length > 0) {
+        await Promise.allSettled(taskTokens.map((token) => runTask(token, controller)));
       }
 
-      if (seenEndTags.has('html')) {
-        controller.enqueue('</html>');
-      }
+      try {
+        if (seenEndTags.has('body')) {
+          controller.enqueue('<script data-htms-remove-on-cleanup>htms.cleanup()</script>\n');
+          controller.enqueue('</body>\n');
+        }
 
-      controller.terminate();
+        if (seenEndTags.has('html')) {
+          controller.enqueue('</html>');
+        }
+      } catch {
+        // noop - Invalid state: Unable to enqueue appends when the stream is cancelled
+      } finally {
+        controller.terminate();
+      }
     },
   });
 }
