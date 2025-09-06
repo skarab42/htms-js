@@ -32,13 +32,19 @@ export function createHtmsFilePipeline(filePath: string, resolver: Resolver): IO
   return createHtmsPipeline(createFileStream(filePath), resolver);
 }
 
+export type ModuleExtension = 'js' | 'cjs' | 'mjs' | 'ts' | 'cts' | 'mts';
+
 export interface ModulePipelineOptions {
   specifier?: string | undefined;
-  extension?: 'js' | 'cjs' | 'mjs' | 'ts' | 'cts' | 'mts' | '' | undefined;
+  extension?: ModuleExtension | undefined;
 }
 
 export function createHtmsStringModulePipeline(rawHtml: string, moduleSpecifier: string): IOStream {
   return createHtmsStringPipeline(rawHtml, new ModuleResolver(moduleSpecifier));
+}
+
+function changeExtension(filePath: string, extension: ModuleExtension): string {
+  return path.format({ ...path.parse(filePath), base: undefined, ext: extension });
 }
 
 export function createModuleSpecifier(filePath: string, options?: ModulePipelineOptions | undefined): string {
@@ -51,12 +57,4 @@ export function createModuleResolver(filePath: string, options?: ModulePipelineO
 
 export function createHtmsFileModulePipeline(filePath: string, options?: ModulePipelineOptions | undefined): IOStream {
   return createHtmsFilePipeline(filePath, createModuleResolver(filePath, options));
-}
-
-function changeExtension(filePath: string, extension: string): string {
-  return path.format({
-    ...path.parse(filePath),
-    base: undefined,
-    ext: extension.startsWith('.') ? extension : '.' + extension,
-  });
 }
