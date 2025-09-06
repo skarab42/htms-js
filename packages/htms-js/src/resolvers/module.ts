@@ -2,8 +2,7 @@ import { createRequire } from 'node:module';
 import process from 'node:process';
 import url from 'node:url';
 
-import type { TaskInfo } from '../stream';
-import type { Resolver, ResolveTask, Task } from '../stream/resolver';
+import type { Resolver, ResolveTask, Task, TaskInfo } from '../stream';
 
 function resolveModule(basePath: string, specifier: string) {
   try {

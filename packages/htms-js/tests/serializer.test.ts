@@ -4,8 +4,14 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { createFileStream, createHtmsSerializer, createHtmsTokenizer, createStringStream } from '../src';
-import { createHtmsResolver, type Resolver } from '../src/stream/resolver';
+import {
+  createFileStream,
+  createHtmsResolver,
+  createHtmsSerializer,
+  createHtmsTokenizer,
+  createStringStream,
+  type Resolver,
+} from '../src';
 import { mockRandomUUIDIncrement } from './fixtures/crypto.mock';
 import { collectString } from './fixtures/stream.helpers';
 

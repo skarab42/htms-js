@@ -4,8 +4,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { createFileStream, createHtmsTokenizer } from '../src';
-import { createHtmsResolver, type Resolver, type TaskToken } from '../src/stream/resolver';
+import { createFileStream, createHtmsResolver, createHtmsTokenizer, type Resolver, type TaskToken } from '../src';
 import { mockRandomUUIDIncrement, mockRandomUUIDOnce } from './fixtures/crypto.mock';
 import { collect } from './fixtures/stream.helpers';
 
