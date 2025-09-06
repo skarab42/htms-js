@@ -14,7 +14,7 @@
 
     // Language & Syntax
     "target": "esnext",
-    "lib": ["esnext", "dom", "dom.iterable"],
+    "lib": ["esnext"],
     "jsx": "react-jsx",
     "allowJs": false,
     "checkJs": false,
@@ -23,8 +23,8 @@
 
     // Modules & Resolution
     "rootDir": ".",
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "moduleDetection": "auto",
     "resolveJsonModule": true,
     "types": ["node"],

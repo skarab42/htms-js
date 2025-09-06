@@ -1,10 +1,10 @@
-import './fixtures/crypto.mock';
+import './fixtures/crypto.mock.js';
 
 import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { createHtmsFileModulePipeline, createHtmsStringModulePipeline, createModuleSpecifier } from '../src';
+import { createHtmsFileModulePipeline, createHtmsStringModulePipeline, createModuleSpecifier } from '../src/index.js';
 
 const fixturesDirectory = path.resolve(import.meta.dirname, 'fixtures');
 

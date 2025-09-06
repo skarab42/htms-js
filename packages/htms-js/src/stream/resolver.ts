@@ -1,6 +1,6 @@
 import { TransformStream } from 'node:stream/web';
 
-import type { TaskInfo, Token } from './tokenizer';
+import type { TaskInfo, Token } from './tokenizer.js';
 
 export type Task = () => PromiseLike<string>;
 

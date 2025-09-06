@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+/// <reference lib="dom" />
 
 import '../src/browser/api.js';
 

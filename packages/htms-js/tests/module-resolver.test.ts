@@ -2,7 +2,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { ModuleResolver, type TaskInfo } from '../src';
+import { ModuleResolver, type TaskInfo } from '../src/index.js';
 
 const fixturesDirectory = path.resolve(import.meta.dirname, 'fixtures', 'tasks');
 

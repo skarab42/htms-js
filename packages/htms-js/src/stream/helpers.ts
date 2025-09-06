@@ -2,10 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ReadableStream } from 'node:stream/web';
 
-import { ModuleResolver } from '../resolvers';
-import { createHtmsResolver, type Resolver } from './resolver';
-import { createHtmsSerializer } from './serializer';
-import { createHtmsTokenizer } from './tokenizer';
+import { ModuleResolver } from '../resolvers/index.js';
+import { createHtmsResolver, type Resolver } from './resolver.js';
+import { createHtmsSerializer } from './serializer.js';
+import { createHtmsTokenizer } from './tokenizer.js';
 
 export type IOStream = ReadableStream<string>;
 

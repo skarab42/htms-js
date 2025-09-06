@@ -1,12 +1,18 @@
-import './fixtures/crypto.mock';
+import './fixtures/crypto.mock.js';
 
 import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { createFileStream, createHtmsResolver, createHtmsTokenizer, type Resolver, type TaskToken } from '../src';
-import { mockRandomUUIDIncrement, mockRandomUUIDOnce } from './fixtures/crypto.mock';
-import { collect } from './fixtures/stream.helpers';
+import {
+  createFileStream,
+  createHtmsResolver,
+  createHtmsTokenizer,
+  type Resolver,
+  type TaskToken,
+} from '../src/index.js';
+import { mockRandomUUIDIncrement, mockRandomUUIDOnce } from './fixtures/crypto.mock.js';
+import { collect } from './fixtures/stream.helpers.js';
 
 const simpleHtmlFixture = path.resolve(import.meta.dirname, './fixtures/html/simple.html');
 

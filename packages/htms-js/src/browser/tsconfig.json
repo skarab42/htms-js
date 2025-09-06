@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "files": ["./api.js"],
+  "include": [],
+  "compilerOptions": {
+    "rootDir": "..",
+    "allowJs": true,
+    "checkJs": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "isolatedDeclarations": false,
+    "lib": ["esnext", "dom", "dom.iterable"]
+  }
+}

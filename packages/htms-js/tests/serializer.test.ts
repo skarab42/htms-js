@@ -1,4 +1,4 @@
-import './fixtures/crypto.mock';
+import './fixtures/crypto.mock.js';
 
 import path from 'node:path';
 
@@ -11,9 +11,9 @@ import {
   createHtmsTokenizer,
   createStringStream,
   type Resolver,
-} from '../src';
-import { mockRandomUUIDIncrement } from './fixtures/crypto.mock';
-import { collectString } from './fixtures/stream.helpers';
+} from '../src/index.js';
+import { mockRandomUUIDIncrement } from './fixtures/crypto.mock.js';
+import { collectString } from './fixtures/stream.helpers.js';
 
 describe('createHtmsSerializer', () => {
   it('should serialize a simple html file with [data-htms] attribute', async () => {

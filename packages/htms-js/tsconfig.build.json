@@ -4,6 +4,7 @@
   "exclude": ["src/**/*.js"],
   "compilerOptions": {
     "outDir": "./dist",
-    "noEmit": false
+    "noEmit": false,
+    "lib": ["esnext"]
   }
 }

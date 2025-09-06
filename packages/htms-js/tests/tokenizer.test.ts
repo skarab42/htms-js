@@ -1,10 +1,10 @@
-import './fixtures/crypto.mock';
+import './fixtures/crypto.mock.js';
 
 import { describe, expect, it } from 'vitest';
 
-import { createHtmsTokenizer, createStringStream } from '../src';
-import { mockRandomUUIDOnce } from './fixtures/crypto.mock';
-import { collect } from './fixtures/stream.helpers';
+import { createHtmsTokenizer, createStringStream } from '../src/index.js';
+import { mockRandomUUIDOnce } from './fixtures/crypto.mock.js';
+import { collect } from './fixtures/stream.helpers.js';
 
 describe('createHtmsTokenizer', () => {
   it('should tokenize a simple html string', async () => {

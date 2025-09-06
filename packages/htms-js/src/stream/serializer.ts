@@ -2,9 +2,9 @@ import { TransformStream } from 'node:stream/web';
 
 import { escapeAttribute } from 'entities/escape';
 
-import { getApiSource } from '../browser';
-import type { ResolverToken, TaskToken } from './resolver';
-import type { EndTagToken, HtmsTagToken, StartTag } from './tokenizer';
+import { getApiSource } from '../browser/index.js';
+import type { ResolverToken, TaskToken } from './resolver.js';
+import type { EndTagToken, HtmsTagToken, StartTag } from './tokenizer.js';
 
 const browserApiSource = getApiSource();
 

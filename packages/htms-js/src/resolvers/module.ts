@@ -3,7 +3,7 @@ import path from 'node:path';
 import process from 'node:process';
 import url from 'node:url';
 
-import type { Resolver, ResolveTask, Task, TaskInfo } from '../stream';
+import type { Resolver, ResolveTask, Task, TaskInfo } from '../stream/index.js';
 
 function resolveModule(basePath: string, specifier: string) {
   try {
