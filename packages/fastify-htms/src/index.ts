@@ -7,6 +7,44 @@ import fp from 'fastify-plugin';
 import { createHtmsFilePipeline, createModuleResolver, type Resolver } from 'htms-js';
 import { minimatch } from 'minimatch';
 
+interface MatchingFilePathSettings {
+  url: string;
+  root: string;
+  index: string;
+  match: string;
+}
+
+/** @internal */
+export function getMatchingFilePath(settings: MatchingFilePathSettings): string | undefined {
+  const { pathname } = new URL(settings.url, 'http://htms');
+  const cleanPathname = pathname.replaceAll(/^\/+|\/+$/g, '');
+  let filePath = path.resolve(settings.root, cleanPathname);
+
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+
+  if (minimatch(filePath, settings.match)) {
+    return filePath;
+  }
+
+  let fileState = fs.statSync(filePath);
+
+  if (!fileState.isDirectory()) {
+    return;
+  }
+
+  filePath = path.resolve(filePath, settings.index);
+
+  if (!fs.existsSync(filePath)) {
+    return;
+  }
+
+  fileState = fs.statSync(filePath);
+
+  return fileState.isFile() ? filePath : undefined;
+}
+
 export type CreateResolver = (filePath: string) => Resolver;
 
 export interface FastifyHtmsOptions {
@@ -21,39 +59,12 @@ type FastifyHtmsPlugin = FastifyPluginAsync<FastifyHtmsOptions>;
 const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
   const { root, index = 'index.html', match = '**/*.htm?(l)', createResolver = createModuleResolver } = options;
 
-  function getMatchingFilePath(pathname: string): string | undefined {
-    const cleanPathname = pathname.replaceAll(/^\/+|\/+$/g, '');
-    let filePath = path.resolve(root, cleanPathname);
-
-    if (!fs.existsSync(filePath)) {
-      return;
-    }
-
-    if (minimatch(filePath, match)) {
-      return filePath;
-    }
-
-    let fileState = fs.statSync(filePath);
-
-    if (fileState.isDirectory()) {
-      filePath = path.resolve(filePath, index);
-      fileState = fs.statSync(filePath);
-    }
-
-    if (fileState.isFile()) {
-      return filePath;
-    }
-
-    return;
-  }
-
   fastify.addHook('onRequest', async (request, reply) => {
     if (request.method !== 'GET') {
       return;
     }
 
-    const { pathname } = new URL(request.url, 'http://htms');
-    const filePath = getMatchingFilePath(pathname);
+    const filePath = getMatchingFilePath({ url: request.url, root, index, match });
 
     if (!filePath) {
       return;
