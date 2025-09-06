@@ -47,11 +47,14 @@ export function getMatchingFilePath(settings: MatchingFilePathSettings): string 
 
 export type CreateResolver = (filePath: string) => Resolver;
 
+export type Environment = 'development' | 'production';
+
 export interface FastifyHtmsOptions {
   root: string;
   index?: string | undefined;
   match?: string | undefined;
   createResolver?: CreateResolver | undefined;
+  environment?: Environment | undefined;
 }
 
 type FastifyHtmsPlugin = FastifyPluginAsync<FastifyHtmsOptions>;
@@ -61,6 +64,7 @@ const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
     root,
     index = 'index.html',
     match = '**/*.htm?(l)',
+    environment = 'development',
     createResolver = (filePath) => createModuleResolver(filePath, { basePath: root }),
   } = options;
 
@@ -85,10 +89,16 @@ const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
       await stream.pipeTo(Writable.toWeb(reply.raw));
       reply.hijack();
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        fastify.log.debug(error, 'abort error');
+      const message = 'Internal Server Error';
+
+      fastify.log.error(error, message);
+
+      if (reply.raw.headersSent) {
+        reply.raw.destroy(error instanceof Error ? error : new Error(String(error)));
       } else {
-        fastify.log.error(error, 'unhandled error');
+        reply.raw.statusCode = 500;
+        reply.raw.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        reply.raw.end(environment === 'development' ? `${message}: ${error}` : message);
       }
     }
   });
