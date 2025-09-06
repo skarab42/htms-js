@@ -9,7 +9,8 @@
     "format": "prettier **/* --ignore-unknown",
     "format:write": "pnpm format --write",
     "format:ci": "pnpm format --check",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "build": "pnpm -r build",
     "reset": "rimraf --glob **/node_modules **/dist ./pnpm-lock.yaml"
