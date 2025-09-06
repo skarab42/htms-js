@@ -1,0 +1,11 @@
+{
+  "name": "server-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "htms-server start"
+  },
+  "dependencies": {
+    "htms-server": "workspace:*"
+  }
+}
