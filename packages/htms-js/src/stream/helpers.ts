@@ -35,6 +35,7 @@ export function createHtmsFilePipeline(filePath: string, resolver: Resolver): IO
 export type ModuleExtension = 'js' | 'cjs' | 'mjs' | 'ts' | 'cts' | 'mts';
 
 export interface ModulePipelineOptions {
+  basePath?: string | undefined;
   specifier?: string | undefined;
   extension?: ModuleExtension | undefined;
 }
@@ -52,7 +53,7 @@ export function createModuleSpecifier(filePath: string, options?: ModulePipeline
 }
 
 export function createModuleResolver(filePath: string, options?: ModulePipelineOptions | undefined): ModuleResolver {
-  return new ModuleResolver(createModuleSpecifier(filePath, options));
+  return new ModuleResolver(createModuleSpecifier(filePath, options), options?.basePath);
 }
 
 export function createHtmsFileModulePipeline(filePath: string, options?: ModulePipelineOptions | undefined): IOStream {

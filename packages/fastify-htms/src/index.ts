@@ -57,7 +57,12 @@ export interface FastifyHtmsOptions {
 type FastifyHtmsPlugin = FastifyPluginAsync<FastifyHtmsOptions>;
 
 const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
-  const { root, index = 'index.html', match = '**/*.htm?(l)', createResolver = createModuleResolver } = options;
+  const {
+    root,
+    index = 'index.html',
+    match = '**/*.htm?(l)',
+    createResolver = (filePath) => createModuleResolver(filePath, { basePath: root }),
+  } = options;
 
   fastify.addHook('onRequest', async (request, reply) => {
     if (request.method !== 'GET') {
