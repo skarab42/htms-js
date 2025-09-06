@@ -11,7 +11,7 @@ const uuidMock = 'uuid-test-0000-0000-mock';
 describe('ModuleResolver', () => {
   it('should throws in the constructor when the module path does not exist', () => {
     expect(() => new ModuleResolver('does-not-exist.mjs', fixturesDirectory)).toThrow(
-      `[htms] module not fount 'does-not-exist.mjs' at '${fixturesDirectory}'`,
+      `[htms] module not found 'does-not-exist.mjs' at '${fixturesDirectory}'`,
     );
   });
 

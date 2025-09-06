@@ -12,7 +12,7 @@ function resolveModule(basePath: string, specifier: string) {
 
     return { moduleUrl, resolvedModulePath };
   } catch (error) {
-    throw new Error(`[htms] module not fount '${specifier}' at '${basePath}'`, { cause: error });
+    throw new Error(`[htms] module not found '${specifier}' at '${basePath}'`, { cause: error });
   }
 }
 
