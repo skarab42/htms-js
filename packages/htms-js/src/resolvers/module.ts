@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import path from 'node:path';
 import process from 'node:process';
 import url from 'node:url';
 
@@ -7,7 +8,8 @@ import type { Resolver, ResolveTask, Task, TaskInfo } from '../stream';
 function resolveModule(basePath: string, specifier: string) {
   try {
     const require = createRequire(import.meta.url);
-    const resolvedModulePath = require.resolve(specifier, { paths: [basePath] });
+    const modulePath = path.resolve(basePath, specifier);
+    const resolvedModulePath = require.resolve(modulePath);
     const moduleUrl = url.pathToFileURL(resolvedModulePath).href;
 
     return { moduleUrl, resolvedModulePath };

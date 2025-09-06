@@ -49,7 +49,9 @@ function changeExtension(filePath: string, extension: ModuleExtension): string {
 }
 
 export function createModuleSpecifier(filePath: string, options?: ModulePipelineOptions | undefined): string {
-  return options?.specifier ?? changeExtension(filePath, options?.extension ?? 'js');
+  const specifier = options?.specifier ?? changeExtension(filePath, options?.extension ?? 'js');
+
+  return options?.basePath ? path.relative(options.basePath, specifier) : specifier;
 }
 
 export function createModuleResolver(filePath: string, options?: ModulePipelineOptions | undefined): ModuleResolver {
