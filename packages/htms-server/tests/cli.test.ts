@@ -37,7 +37,8 @@ describe('htms-server CLI', () => {
       host: 'localhost',
       port: 4200,
       root: path.resolve('./public'),
-      logger: false,
+      cacheModule: undefined,
+      logger: undefined,
     });
   });
 
@@ -57,14 +58,16 @@ describe('htms-server CLI', () => {
       '--environment',
       'development',
       '--logger',
+      '--cache-module',
     ]);
 
     expect(startMock).toHaveBeenCalledExactlyOnceWith({
       environment: 'development',
       host: '0.0.0.0',
-      logger: true,
       port: 5050,
       root: path.resolve(customRoot),
+      cacheModule: true,
+      logger: true,
     });
   });
 });

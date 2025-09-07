@@ -9,6 +9,7 @@ export interface StartOptions {
   host?: string | undefined;
   root?: string | undefined;
   environment?: Environment | undefined;
+  cacheModule?: boolean | undefined;
   logger?: FastifyLoggerOptions | boolean | undefined;
 }
 
@@ -19,6 +20,7 @@ export async function start(options?: StartOptions | undefined): Promise<void> {
     root = path.resolve(process.cwd(), 'public'),
     environment = 'production',
     logger = environment !== 'production',
+    cacheModule = environment === 'production',
   } = options || {};
 
   console.log(`[htms-server] environment: ${environment}`);
@@ -26,7 +28,7 @@ export async function start(options?: StartOptions | undefined): Promise<void> {
 
   const server = Fastify({ logger });
 
-  await server.register(fastifyHtms, { root, environment });
+  await server.register(fastifyHtms, { root, environment, cacheModule });
   await server.register(fastifyStatic, { root });
 
   server.listen({ host, port }, () => {

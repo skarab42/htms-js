@@ -79,13 +79,14 @@ To also serve static assets (images, css, js), register [`@fastify/static`](http
 
 ## Options
 
-| Option           | Type                             | Description                                                 |                     |
-| ---------------- | -------------------------------- | ----------------------------------------------------------- | ------------------- |
-| `root`           | `string`                         | Required. Folder that contains your `.html` files           |                     |
-| `index`          | `string`                         | Default file to serve when a directory is requested         |                     |
-| `match`          | `string`                         | Minimatch pattern to filter which files are handled by HTMS |                     |
-| `createResolver` | `(filePath: string) => Resolver` | Custom resolver factory for HTMS                            |                     |
-| `environment`    | \`'development'                  | 'production'\`                                              | Set the environment |
+| Option           | Type                             | Description                                                 |
+| ---------------- | -------------------------------- | ----------------------------------------------------------- |
+| `root`           | `string`                         | Required. Folder that contains your `.html` files           |
+| `index`          | `string`                         | Default file to serve when a directory is requested         |
+| `match`          | `string`                         | Minimatch pattern to filter which files are handled by HTMS |
+| `createResolver` | `(filePath: string) => Resolver` | Custom resolver factory for HTMS                            |
+| `environment`    | `'development' \| 'production'`  | Set the environment                                         |
+| `cacheModule`    | `boolean`                        | Enable module caching                                       |
 
 ---
 

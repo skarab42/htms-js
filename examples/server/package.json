@@ -1,5 +1,5 @@
 {
-  "name": "server-example",
+  "name": "htms-server-example",
   "private": true,
   "type": "module",
   "scripts": {

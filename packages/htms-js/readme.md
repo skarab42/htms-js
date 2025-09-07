@@ -143,13 +143,17 @@ createHtmsFileModulePipeline(
   options?: {
     specifier?: string;
     extension?: string;
+    basePath?: string;
+    cacheModule?: boolean;
   }
 ): ReadableStream<string>
 ```
 
 - **`filePath`:** path to HTML with placeholders.
-- **`options.specifier`:** explicit module path.
+- **`options.specifier`:** relative module path.
 - **`options.extension`:** auto-derive tasks module by swapping extension (default: `js`).
+- **`options.basePath`:** module base path.
+- **`options.cacheModule`:** enable module caching.
 
 ### Resolution rules
 

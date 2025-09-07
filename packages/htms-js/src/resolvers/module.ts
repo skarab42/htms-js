@@ -18,19 +18,27 @@ function resolveModule(basePath: string, specifier: string) {
   }
 }
 
+export interface ModuleResolverOptions {
+  basePath?: string | undefined;
+  cacheModule?: boolean | undefined;
+}
+
 export class ModuleResolver implements Resolver {
   readonly #resolvedModulePath: string;
+  readonly #cacheModule: boolean;
   readonly #moduleUrl: string;
 
-  constructor(specifier: string, basePath: string = process.cwd()) {
+  constructor(specifier: string, options?: ModuleResolverOptions) {
+    const { basePath = process.cwd(), cacheModule = true } = options ?? {};
     const { resolvedModulePath, moduleUrl } = resolveModule(basePath, specifier);
 
     this.#resolvedModulePath = resolvedModulePath;
+    this.#cacheModule = cacheModule;
     this.#moduleUrl = moduleUrl;
   }
 
   async #importModule(): Promise<Record<string, ResolveTask>> {
-    const taskModule = await import(this.#moduleUrl);
+    const taskModule = await import(this.#cacheModule ? this.#moduleUrl : `${this.#moduleUrl}#${Date.now()}`);
 
     return taskModule.default ?? taskModule;
   }

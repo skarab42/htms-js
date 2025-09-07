@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ReadableStream } from 'node:stream/web';
 
-import { ModuleResolver } from '../resolvers/index.js';
+import { ModuleResolver, type ModuleResolverOptions } from '../resolvers/index.js';
 import { createHtmsResolver, type Resolver } from './resolver.js';
 import { createHtmsSerializer } from './serializer.js';
 import { createHtmsTokenizer } from './tokenizer.js';
@@ -34,8 +34,7 @@ export function createHtmsFilePipeline(filePath: string, resolver: Resolver): IO
 
 export type ModuleExtension = 'js' | 'cjs' | 'mjs' | 'ts' | 'cts' | 'mts';
 
-export interface ModulePipelineOptions {
-  basePath?: string | undefined;
+export interface ModulePipelineOptions extends ModuleResolverOptions {
   specifier?: string | undefined;
   extension?: ModuleExtension | undefined;
 }
@@ -55,7 +54,7 @@ export function createModuleSpecifier(filePath: string, options?: ModulePipeline
 }
 
 export function createModuleResolver(filePath: string, options?: ModulePipelineOptions | undefined): ModuleResolver {
-  return new ModuleResolver(createModuleSpecifier(filePath, options), options?.basePath);
+  return new ModuleResolver(createModuleSpecifier(filePath, options), options);
 }
 
 export function createHtmsFileModulePipeline(filePath: string, options?: ModulePipelineOptions | undefined): IOStream {

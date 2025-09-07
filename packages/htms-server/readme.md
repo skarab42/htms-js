@@ -20,9 +20,9 @@ bun add -g htms-server
 
 This will expose the `htms-server` command.
 
-## Without global install
+## Without global installation
 
-You can also run it directly without installing globally:
+You can also run it directly without installing it globally:
 
 ```bash
 npx htms-server start
@@ -85,13 +85,14 @@ Starts a local server that serves `.html` files and streams them through the HTM
 
 ### Options
 
-| Flag                  | Description                   | Default      |
-| --------------------- | ----------------------------- | ------------ |
-| `--host <host>`       | Host to bind                  | `localhost`  |
-| `--port <port>`       | Port to listen on             | `4200`       |
-| `--root <path>`       | Root directory to serve       | `./public`   |
-| `--environment <env>` | `production` or `development` | `production` |
-| `--logger`            | Enable logging                | `false`      |
+| Flag                  | Description                   | Default                                           |
+| --------------------- | ----------------------------- | ------------------------------------------------- |
+| `--host <host>`       | Host to bind                  | `localhost`                                       |
+| `--port <port>`       | Port to listen on             | `4200`                                            |
+| `--root <path>`       | Root directory to serve       | `./public`                                        |
+| `--environment <env>` | `production` or `development` | `production`                                      |
+| `--cache-module`      | Enable module caching         | `false` (`true` if `undefined` and `development`) |
+| `--logger`            | Enable logging                | `false` (`true` if `undefined` and `development`) |
 
 ### Examples
 

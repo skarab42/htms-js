@@ -53,6 +53,7 @@ export interface FastifyHtmsOptions {
   root: string;
   index?: string | undefined;
   match?: string | undefined;
+  cacheModule?: boolean | undefined;
   createResolver?: CreateResolver | undefined;
   environment?: Environment | undefined;
 }
@@ -62,10 +63,11 @@ type FastifyHtmsPlugin = FastifyPluginAsync<FastifyHtmsOptions>;
 const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
   const {
     root,
+    cacheModule,
     index = 'index.html',
     match = '**/*.htm?(l)',
     environment = 'development',
-    createResolver = (filePath) => createModuleResolver(filePath, { basePath: root }),
+    createResolver = (filePath) => createModuleResolver(filePath, { basePath: root, cacheModule }),
   } = options;
 
   fastify.addHook('onRequest', async (request, reply) => {

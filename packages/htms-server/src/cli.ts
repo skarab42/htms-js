@@ -5,24 +5,31 @@ import { cac } from 'cac';
 
 import { start } from './index.js';
 
-const cli = cac('htms');
+const cli = cac('htms-server');
 
-cli
-  .command('start', 'Start the htms server')
-  .option('--host <host>', 'Host to bind', { default: 'localhost' })
-  .option('--port <port>', 'Port to listen on', { default: 4200 })
-  .option('--root <path>', 'Root directory to serve', { default: './public' })
-  .option('--environment <env>', 'Environment (production|development)', { default: 'production' })
-  .option('--logger', 'Enable logging')
-  .action(async (options) => {
-    await start({
-      host: options.host,
-      port: options.port,
-      root: path.resolve(options.root),
-      environment: options.environment,
-      logger: Boolean(options.logger),
+try {
+  cli
+    .command('start', 'Start the htms server')
+    .option('--host <host>', 'Host to bind', { default: 'localhost' })
+    .option('--port <port>', 'Port to listen on', { default: 4200 })
+    .option('--root <path>', 'Root directory to serve', { default: './public' })
+    .option('--environment <env>', 'Environment (production|development)', { default: 'production' })
+    .option('--cache-module', 'Enable module caching (true if undefined and development)', { default: undefined })
+    .option('--logger', 'Enable logging (true if undefined and development)', { default: undefined })
+    .action(async (options) => {
+      await start({
+        host: options.host,
+        port: options.port,
+        root: path.resolve(options.root),
+        environment: options.environment,
+        cacheModule: options.cacheModule,
+        logger: options.logger,
+      });
     });
-  });
 
-cli.help();
-cli.parse(process.argv);
+  cli.help();
+  cli.parse(process.argv);
+} catch (error) {
+  console.log(`[error] ${(error as Error).message}\n`);
+  cli.outputHelp();
+}

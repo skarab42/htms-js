@@ -28,10 +28,41 @@ describe('htms-server start', () => {
     vi.restoreAllMocks();
   });
 
-  it('should call start with default options', async () => {
+  it('should call start (development)', async () => {
     const expectedRoot = path.resolve('./public');
 
-    await start();
+    await start({ environment: 'development' });
+
+    expect(consoleLogMock).toHaveBeenCalledTimes(3);
+    expect(consoleLogMock).toHaveBeenNthCalledWith(1, '[htms-server] environment: development');
+    expect(consoleLogMock).toHaveBeenNthCalledWith(2, `[htms-server] root: ${expectedRoot}`);
+    expect(consoleLogMock).toHaveBeenNthCalledWith(3, '[htms-server] listening on http://localhost:4200');
+
+    expect(FastifyMock).toHaveBeenCalledExactlyOnceWith({ logger: true });
+
+    expect(registerMock).toHaveBeenCalledTimes(2);
+    expect(registerMock).toHaveBeenNthCalledWith(1, expect.any(Function), {
+      environment: 'development',
+      cacheModule: false,
+      root: expectedRoot,
+    });
+    expect(registerMock).toHaveBeenNthCalledWith(2, expect.any(Function), {
+      root: expectedRoot,
+    });
+
+    expect(listenMock).toHaveBeenCalledExactlyOnceWith(
+      {
+        host: 'localhost',
+        port: 4200,
+      },
+      expect.any(Function),
+    );
+  });
+
+  it('should call start (production)', async () => {
+    const expectedRoot = path.resolve('./public');
+
+    await start({ environment: 'production' });
 
     expect(consoleLogMock).toHaveBeenCalledTimes(3);
     expect(consoleLogMock).toHaveBeenNthCalledWith(1, '[htms-server] environment: production');
@@ -43,6 +74,7 @@ describe('htms-server start', () => {
     expect(registerMock).toHaveBeenCalledTimes(2);
     expect(registerMock).toHaveBeenNthCalledWith(1, expect.any(Function), {
       environment: 'production',
+      cacheModule: true,
       root: expectedRoot,
     });
     expect(registerMock).toHaveBeenNthCalledWith(2, expect.any(Function), {
