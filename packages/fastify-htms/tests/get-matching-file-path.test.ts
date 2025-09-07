@@ -2,7 +2,7 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { getMatchingFilePath } from '../src';
+import { getMatchingFilePath } from '../src/index.js';
 
 const rootMock = path.join(import.meta.dirname, 'fixtures/html');
 

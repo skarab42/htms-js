@@ -1,12 +1,12 @@
-import './fixtures/crypto.mock';
+import './fixtures/crypto.mock.js';
 
 import path from 'node:path';
 
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { fastifyHtms } from '../src';
-import { mockRandomUUIDIncrement } from './fixtures/crypto.mock';
+import { fastifyHtms } from '../src/index.js';
+import { mockRandomUUIDIncrement } from './fixtures/crypto.mock.js';
 
 const root = path.join(import.meta.dirname, 'fixtures/html');
 
