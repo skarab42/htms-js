@@ -20,6 +20,12 @@ describe('createModuleSpecifier', () => {
   it('should returns an explicit specifier override', () => {
     expect(createModuleSpecifier('pages/index.html', { specifier: 'tasks/news.ts' })).toBe('tasks/news.ts');
   });
+
+  it('should returns specifier without base path', () => {
+    expect(createModuleSpecifier('/some/parent/path/pages/index.html', { basePath: '/some/parent/path' })).toBe(
+      path.normalize('pages/index.js'),
+    );
+  });
 });
 
 describe('convenience pipelines', () => {
