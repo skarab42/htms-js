@@ -4,7 +4,7 @@ import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyLoggerOptions } from 'fastify';
 import { type Environment, fastifyHtms } from 'fastify-htms';
 
-export interface ServeOptions {
+export interface StartOptions {
   port?: number | undefined;
   host?: string | undefined;
   root?: string | undefined;
@@ -12,7 +12,7 @@ export interface ServeOptions {
   logger?: FastifyLoggerOptions | boolean | undefined;
 }
 
-export async function start(options?: ServeOptions | undefined): Promise<void> {
+export async function start(options?: StartOptions | undefined): Promise<void> {
   const {
     port = 4200,
     host = 'localhost',

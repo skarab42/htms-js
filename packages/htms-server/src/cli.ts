@@ -13,14 +13,16 @@ cli
   .option('--port <port>', 'Port to listen on', { default: 4200 })
   .option('--root <path>', 'Root directory to serve', { default: './public' })
   .option('--environment <env>', 'Environment (production|development)', { default: 'production' })
+  .option('--logger', 'Enable logging')
   .action(async (options) => {
     await start({
       host: options.host,
-      port: options.port ? Number(options.port) : undefined,
+      port: options.port,
       root: path.resolve(options.root),
       environment: options.environment,
+      logger: Boolean(options.logger),
     });
   });
 
 cli.help();
-cli.parse();
+cli.parse(process.argv);
