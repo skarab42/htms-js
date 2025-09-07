@@ -10,12 +10,12 @@ import { mockRandomUUIDIncrement } from './fixtures/crypto.mock.js';
 
 const root = path.join(import.meta.dirname, 'fixtures/html');
 
-describe('fastifyHtms plugin', () => {
+describe('fastifyHtms (environment = development)', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
     app = Fastify({ logger: false });
-    await app.register(fastifyHtms, { root });
+    await app.register(fastifyHtms, { root, environment: 'development' });
     await app.ready();
   });
 
@@ -53,5 +53,27 @@ describe('fastifyHtms plugin', () => {
     const response = await app.inject({ method: 'GET', url: '/not-found.html' });
 
     expect(response.statusCode).toBe(404);
+  });
+});
+
+describe('fastifyHtms plugin (environment = production)', () => {
+  let app: FastifyInstance;
+
+  beforeAll(async () => {
+    app = Fastify({ logger: false });
+    await app.register(fastifyHtms, { root, environment: 'production' });
+    await app.ready();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  it('should returns error 500 without extended error message in production', async () => {
+    const response = await app.inject({ method: 'GET', url: '/index.html' });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.headers['content-type']).toContain('text/plain');
+    expect(response.body).toBe('Internal Server Error');
   });
 });
