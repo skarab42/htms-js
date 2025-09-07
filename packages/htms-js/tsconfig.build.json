@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.js"],
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./src/**/*.js"],
   "compilerOptions": {
+    "rootDir": "./src",
     "outDir": "./dist",
     "noEmit": false,
     "lib": ["esnext"]
