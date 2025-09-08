@@ -1,20 +1,159 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Fastify example</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>HTMS 💨 Stream Async HTML, Stay SEO-Friendly</title>
+    <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <section>
-      <h2>Foo</h2>
-      <p data-htms="foo">Foo is loading...</p>
-    </section>
-    <section>
-      <h2>Bar</h2>
-      <p data-htms="bar">Bar is loading...</p>
-    </section>
-    <section>
-      <h2>Baz</h2>
-      <p data-htms="baz">Baz is loading...</p>
-    </section>
+    <main>
+      <header class="header">
+        <h1>HTMS 💨 Streaming Demo</h1>
+        <p>Stream Async HTML, Stay SEO-Friendly</p>
+      </header>
+
+      <div class="grid">
+        <!-- STATIC: Instant load -->
+        <div class="card static">
+          <div class="status instant">INSTANT</div>
+          <div class="metric">⚡</div>
+          <h3>Server Status</h3>
+          <p class="label">Always available</p>
+          <p>This loads instantly because it's static HTML!</p>
+        </div>
+
+        <!-- DYNAMIC: Fast (800ms) -->
+        <div class="card loading" data-htms="salesData">
+          <div class="loading-bar"></div>
+          <div class="status streaming">STREAMING</div>
+          <div class="metric">📊</div>
+          <h3>Streaming Data</h3>
+          <p class="label">Calculating...</p>
+        </div>
+
+        <!-- STATIC: Another instant -->
+        <div class="card static">
+          <div class="status instant">INSTANT</div>
+          <div class="metric">🖱️</div>
+          <h3>Accessibility</h3>
+          <p class="label">Always</p>
+          <p>Navigation & forms work immediately!</p>
+        </div>
+
+        <!-- DYNAMIC: Medium (1.5s) -->
+        <div class="card loading" data-htms="userStats">
+          <div class="loading-bar"></div>
+          <div class="status streaming">STREAMING</div>
+          <div class="metric">⏳</div>
+          <h3>User Stats</h3>
+          <p class="label">Loading...</p>
+        </div>
+
+        <!-- DYNAMIC: Slow (2.5s) -->
+        <div class="card loading" data-htms="analytics">
+          <div class="loading-bar"></div>
+          <div class="status streaming">STREAMING</div>
+          <div class="metric">🔍</div>
+          <h3>Analytics</h3>
+          <p class="label">Processing...</p>
+        </div>
+
+        <!-- STATIC: Last instant -->
+        <div class="card static">
+          <div class="status instant">INSTANT</div>
+          <div class="metric">💚</div>
+          <h3>System Health</h3>
+          <p class="label">All systems go</p>
+          <p>Static content = instant visibility!</p>
+        </div>
+      </div>
+
+      <section class="explain" aria-labelledby="explain-title">
+        <h2 class="explain__title" id="explain-title">What's happening above?</h2>
+        <p class="explain__subtitle">
+          A quick peek at the streaming flow — from instant HTML to progressively completed cards.
+        </p>
+
+        <div class="explain-grid">
+          <article class="card explain-card instant" aria-label="Instant content">
+            <span class="explain-step" style="color: var(--green)">
+              <span class="dot" aria-hidden="true"></span> Instant
+            </span>
+            <p>Server sends the first chunk immediately: skeletons/instant data render right away, no waiting.</p>
+          </article>
+
+          <article class="card explain-card stream" aria-label="Streaming chunks">
+            <span class="explain-step" style="color: var(--amber)">
+              <span class="dot" aria-hidden="true"></span> Streaming
+            </span>
+            <p>
+              As data resolves, more HTML chunks append to the DOM; you can watch this in the Network & Elements panels.
+            </p>
+          </article>
+
+          <article class="card explain-card complete" aria-label="Completed result">
+            <span class="explain-step" style="color: var(--blue)">
+              <span class="dot" aria-hidden="true"></span> Completed</span
+            >
+            <p>Cards finish with computed values already in the streamed HTML. SEO & accessible by default.</p>
+          </article>
+
+          <article class="card explain-card explain-result" aria-label="Why it matters">
+            <div>
+              <h3 style="margin: 0 0 var(--space-3)">Take a look</h3>
+              <p>Open DevTools and compare the server response with the final DOM.</p>
+              <ul>
+                <li>Open DevTools (F12 or Cmd/Ctrl + Shift + I).</li>
+                <li>Network tab: click the main HTML document. Look at the Response panel while it loads.</li>
+                <li>Elements tab: watch nodes appear as streaming continues.</li>
+                <li>You will see that the final values are already in the server response.</li>
+              </ul>
+              <p>
+                More details on GitHub:
+                <a href="https://github.com/skarab42/htms-js" target="_blank" rel="noopener noreferrer">htms-js</a>
+              </p>
+            </div>
+            <pre aria-label="Example (trimmed)">
+&lt;!-- First chunk --&gt;
+&lt;div class="card loading" data-htms="salesData"&gt;
+  Loading sales data...
+&lt;/div&gt;
+
+&lt;!-- Later chunk --&gt;
+&lt;htms-chunk target="salesData"&gt;
+  &lt;div class="card complete"&gt;
+    &lt;strong&gt;price&lt;/strong&gt;: 19.99
+  &lt;/div&gt;
+&lt;/htms-chunk&gt;</pre
+            >
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>
+          ✨ <strong>3 cards load instantly</strong> • <strong>3 cards stream progressively</strong> •
+          <strong>Perfect SEO</strong> ✨
+        </p>
+        <p><small>HTML streaming: ancient tech, modern solutions</small></p>
+        <p>
+          <a
+            href="https://github.com/skarab42/htms-js"
+            aria-label="GitHub repository: skarab42/htms-js"
+            rel="noopener noreferrer"
+            class="github-link"
+            target="_blank"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 96">
+              <path
+                fill="currentColor"
+                d="M48.85 0C21.84 0 0 22 0 49.22 0 70.97 14 89.39 33.4 95.9c2.43.49 3.32-1.06 3.32-2.37 0-1.14-.08-5.05-.08-9.12-13.59 2.93-16.42-5.87-16.42-5.87-2.18-5.7-5.42-7.17-5.42-7.17-4.45-3.01.33-3.01.33-3.01 4.93.32 7.52 5.05 7.52 5.05 4.37 7.5 11.4 5.38 14.23 4.07.4-3.18 1.7-5.38 3.08-6.6-10.84-1.14-22.25-5.38-22.25-24.28 0-5.38 1.94-9.78 5.02-13.2-.49-1.22-2.19-6.28.48-13.04 0 0 4.13-1.3 13.43 5.05a46.97 46.97 0 0 1 12.21-1.63 47 47 0 0 1 12.22 1.63c9.3-6.35 13.42-5.05 13.42-5.05 2.67 6.76.97 11.82.49 13.04a18.9 18.9 0 0 1 5.01 13.2c0 18.9-11.4 23.06-22.32 24.28 1.78 1.55 3.32 4.48 3.32 9.13 0 6.6-.08 11.9-.08 13.52 0 1.3.89 2.86 3.31 2.37a49.18 49.18 0 0 0 33.4-46.7C97.72 22 75.8 0 48.86 0z"
+              />
+            </svg>
+          </a>
+        </p>
+      </footer>
+    </main>
   </body>
 </html>

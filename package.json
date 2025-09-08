@@ -1,6 +1,7 @@
 {
   "private": true,
   "name": "htms-js-woprkspace",
+  "type": "module",
   "scripts": {
     "prepare": "npx simple-git-hooks",
     "lint": "eslint .",
