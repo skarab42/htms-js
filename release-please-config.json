@@ -19,5 +19,16 @@
       "changelog-path": "packages/htms-server/changelog.md",
       "additional-paths": ["packages/fastify-htms"]
     }
-  }
+  },
+  "changelog-sections": [
+    { "type": "feat", "section": "✨ Features" },
+    { "type": "fix", "section": "🐛 Bug Fixes" },
+    { "type": "docs", "section": "📝 Docs" },
+    { "type": "refactor", "section": "🛠 Refactors" },
+    { "type": "style", "section": "🎨 Style" },
+    { "type": "test", "section": "🧪 Tests" },
+    { "type": "ci", "section": "⚙️ CI" },
+    { "type": "chore", "section": "🧹 Chores" },
+    { "type": "deps", "section": "📦 Dependencies" }
+  ]
 }
