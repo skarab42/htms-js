@@ -1,5 +1,5 @@
 {
-  "packages/htms-js": "0.0.0",
-  "packages/fastify-htms": "0.0.0",
+  "packages/htms-js": "0.1.0",
+  "packages/fastify-htms": "0.1.0",
   "packages/htms-server": "0.1.0"
 }
