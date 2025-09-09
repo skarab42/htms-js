@@ -7,16 +7,16 @@
   "packages": {
     "packages/htms-js": {
       "package-name": "htms-js",
-      "changelog-path": "packages/htms-js/changelog.md"
+      "changelog-path": "changelog.md"
     },
     "packages/fastify-htms": {
       "package-name": "fastify-htms",
-      "changelog-path": "packages/fastify-htms/changelog.md",
+      "changelog-path": "changelog.md",
       "additional-paths": ["packages/htms-js"]
     },
     "packages/htms-server": {
       "package-name": "htms-server",
-      "changelog-path": "packages/htms-server/changelog.md",
+      "changelog-path": "changelog.md",
       "additional-paths": ["packages/fastify-htms"]
     }
   },
