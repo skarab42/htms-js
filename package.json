@@ -6,14 +6,15 @@
     "prepare": "npx simple-git-hooks",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
-    "lint:ci": "pnpm lint --max-warnings=0",
+    "lint:check": "pnpm lint --max-warnings=0",
     "format": "prettier **/* --ignore-unknown",
     "format:write": "pnpm format --write",
-    "format:ci": "pnpm format --check",
+    "format:check": "pnpm format --check",
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "build": "pnpm -r build",
+    "check": "pnpm format:check && pnpm lint:check && pnpm test",
     "reset": "rimraf --glob ./pnpm-lock.yaml **/node_modules **/dist "
   },
   "devDependencies": {
