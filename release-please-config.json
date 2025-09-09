@@ -1,13 +1,23 @@
 {
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "tag-separator": "@",
+  "include-component-in-tag": true,
+  "separate-pull-requests": true,
   "packages": {
-    ".": {
-      "changelog-path": "changelog.md",
-      "release-type": "node",
-      "bump-minor-pre-major": false,
-      "bump-patch-for-minor-pre-major": false,
-      "draft": false,
-      "prerelease": false
+    "packages/htms-js": {
+      "package-name": "htms-js",
+      "changelog-path": "packages/htms-js/changelog.md"
+    },
+    "packages/fastify-htms": {
+      "package-name": "fastify-htms",
+      "changelog-path": "packages/fastify-htms/changelog.md",
+      "additional-paths": ["packages/htms-js"]
+    },
+    "packages/htms-server": {
+      "package-name": "htms-server",
+      "changelog-path": "packages/htms-server/changelog.md",
+      "additional-paths": ["packages/fastify-htms"]
     }
-  },
-  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+  }
 }
