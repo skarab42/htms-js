@@ -90,9 +90,9 @@ Visit `http://localhost:3000`: content renders immediately, then fills itself in
 
 ## Examples
 
-- [Express](https://github.com/skarab42/htms-js/examples/express/index.ts), [Fastify](https://github.com/skarab42/htms-js/examples/fastify/index.ts), [Hono](https://github.com/skarab42/htms-js/examples/hono/index.ts)
-- [Raw streaming](https://github.com/skarab42/htms-js/examples/stdout/index.ts) (stdout)
-- [htms server](https://github.com/skarab42/htms-js/examples/server) (cli)
+- [Express](https://github.com/skarab42/htms-js/tree/main/examples/express/index.ts), [Fastify](https://github.com/skarab42/htms-js/tree/main/examples/fastify/index.ts), [Hono](https://github.com/skarab42/htms-js/tree/main/examples/hono/index.ts)
+- [Raw streaming](https://github.com/skarab42/htms-js/tree/main/examples/stdout/index.ts) (stdout)
+- [htms server](https://github.com/skarab42/htms-js/tree/main/examples/server) (cli)
 
 Run `pnpm --filter (express|fastify|hono|stdout|server)-example start` to try them.
 

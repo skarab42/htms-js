@@ -120,7 +120,7 @@ Open the shown URL in your browser to see HTML streaming in action.
 
 ## Notes
 
-- This CLI is for quick local testing. For integration in a Fastify app, use [fastify-htms](https://github.com/skarab42/htms-js/packages/fastify-htms/).
+- This CLI is for quick local testing. For integration in a Fastify app, use [fastify-htms](https://github.com/skarab42/htms-js/tree/main/packages/fastify-htms/).
 - For how HTMS works (resolvers, placeholders, etc.), see [htms-js](https://github.com/skarab42/htms-js).
 
 ---

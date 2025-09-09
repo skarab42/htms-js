@@ -98,7 +98,7 @@ To also serve static assets (images, css, js), register [`@fastify/static`](http
 
 ## More info
 
-For details on how HTMS works and how to write resolvers, see [htms-js](https://github.com/skarab42/htms-js/packages/htms-js).
+For details on how HTMS works and how to write resolvers, see [htms-js](https://github.com/skarab42/htms-js/tree/main/packages/htms-js).
 
 ---
 
