@@ -6,6 +6,12 @@ This monorepo hosts the JavaScript implementation of **HTMS**: a proposal to pro
 
 ---
 
+## Try the live demo
+
+- https://htms.skarab42.dev
+
+---
+
 ## Packages
 
 This workspace contains multiple packages:

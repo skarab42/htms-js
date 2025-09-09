@@ -4,6 +4,12 @@ Fastify plugin that integrates [htms-js](https://github.com/skarab42/htms-js) wi
 
 ---
 
+## Try the live demo
+
+- https://htms.skarab42.dev
+
+---
+
 ## Install
 
 Use your preferred package manager to install the plugin:

@@ -18,6 +18,12 @@
 
 ---
 
+## 💻 Try the live demo
+
+- https://htms.skarab42.dev
+
+---
+
 ## 🚀 Quick start
 
 ### 1. Install

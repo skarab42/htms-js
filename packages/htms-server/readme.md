@@ -4,6 +4,12 @@ Small CLI to quickly test HTML streaming with [htms-js](https://github.com/skara
 
 ---
 
+## Try the live demo
+
+- https://htms.skarab42.dev
+
+---
+
 ## Install (global)
 
 Use your preferred package manager to install the CLI globally:
