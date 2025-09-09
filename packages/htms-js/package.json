@@ -1,8 +1,8 @@
 {
-  "private": true,
   "name": "htms-js",
   "description": "HTMS 💨 Stream Async HTML, Stay SEO-Friendly",
-  "version": "0.1.0",
+  "version": "0.0.0",
+  "private": false,
   "publishConfig": {
     "access": "public"
   },
