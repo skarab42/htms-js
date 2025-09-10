@@ -40,7 +40,7 @@ function createCompressor(acceptEncoding: string, options?: HtmsCompressorOption
   }
 }
 
-export type HtmsCompressorStream = TransformStream<string, Buffer>;
+export type HtmsCompressorStream = TransformStream<string, string | Buffer>;
 
 export function createHtmsCompressor(
   encoding: HtmsCompressorEncoding,

@@ -9,6 +9,7 @@ import {
   createHtmsCompressor,
   createHtmsFilePipeline,
   createModuleResolver,
+  type HtmsCompressorEncoding,
   type HtmsCompressorStream,
   type Resolver,
 } from 'htms-js';
@@ -54,22 +55,23 @@ export function getMatchingFilePath(settings: MatchingFilePathSettings): string 
 
 export type CreateResolver = (filePath: string) => Resolver;
 
-export type Encoding = 'br' | 'gzip' | 'deflate';
+export const encodings: HtmsCompressorEncoding[] = ['br', 'gzip', 'deflate']; // order matter
 
-export const encodings: Encoding[] = ['br', 'gzip', 'deflate']; // order matter
-
-export function parseAcceptEncodings(acceptEncoding: string | undefined): Encoding[] {
+export function parseAcceptEncodings(acceptEncoding: string | undefined): HtmsCompressorEncoding[] {
   if (!acceptEncoding) {
     return [];
   }
 
   return acceptEncoding
     .split(',')
-    .map((part) => part.trim().split(';')[0] as Encoding)
+    .map((part) => part.trim().split(';')[0] as HtmsCompressorEncoding)
     .filter((part) => encodings.includes(part));
 }
 
-function findContentEncoding(allowedEncodings: Encoding[], acceptEncodings: Encoding[]): Encoding | undefined {
+function findContentEncoding(
+  allowedEncodings: HtmsCompressorEncoding[],
+  acceptEncodings: HtmsCompressorEncoding[],
+): HtmsCompressorEncoding | undefined {
   return allowedEncodings.find((encoding) => acceptEncodings.includes(encoding));
 }
 
@@ -80,7 +82,7 @@ export interface FastifyHtmsOptions {
   index?: string | undefined;
   match?: string | undefined;
   compression?: boolean | undefined;
-  encodings?: Encoding[] | undefined;
+  encodings?: HtmsCompressorEncoding[] | undefined;
   cacheModule?: boolean | undefined;
   createResolver?: CreateResolver | undefined;
   environment?: Environment | undefined;
