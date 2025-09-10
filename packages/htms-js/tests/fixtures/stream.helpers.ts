@@ -15,3 +15,17 @@ export async function collectString(stream: ReadableStream): Promise<string> {
 
   return output.join('');
 }
+
+export async function collectBuffer(stream: ReadableStream): Promise<Buffer> {
+  const chunks: Buffer[] = [];
+
+  for await (const chunk of stream.values()) {
+    if (chunk && chunk.buffer instanceof ArrayBuffer) {
+      chunks.push(Buffer.from(chunk.buffer));
+    } else {
+      chunks.push(Buffer.from(String(chunk)));
+    }
+  }
+
+  return Buffer.concat(chunks);
+}

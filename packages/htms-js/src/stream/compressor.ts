@@ -10,9 +10,9 @@ import {
 } from 'node:zlib';
 
 export interface HtmsCompressorOptions {
-  brotli?: BrotliOptions;
-  deflate?: ZlibOptions;
-  gzip?: ZlibOptions;
+  brotli?: BrotliOptions | undefined;
+  deflate?: ZlibOptions | undefined;
+  gzip?: ZlibOptions | undefined;
 }
 
 export type HtmsCompressorEncoding = 'br' | 'gzip' | 'deflate';

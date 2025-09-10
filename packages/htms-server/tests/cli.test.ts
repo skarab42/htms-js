@@ -37,6 +37,7 @@ describe('htms-server CLI', () => {
       host: 'localhost',
       port: 4200,
       root: path.resolve('./public'),
+      compression: true,
       cacheModule: undefined,
       logger: undefined,
     });
@@ -66,6 +67,7 @@ describe('htms-server CLI', () => {
       host: '0.0.0.0',
       port: 5050,
       root: path.resolve(customRoot),
+      compression: true,
       cacheModule: true,
       logger: true,
     });
