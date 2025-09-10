@@ -2,17 +2,20 @@
   color-scheme: dark;
 
   /* Palette (HSL so it's easy to tweak) */
-  --bg: hsl(0 0% 10%); /* #1a1a1a */
-  --surface: hsl(0 0% 16%); /* #292929 */
-  --surface-2: hsl(210 20% 10%); /* darker overlay */
-  --text: hsl(0 0% 98%);
-  --muted: hsl(0 0% 60%);
-  --muted-2: hsl(0 0% 40%);
+  --bg: hsl(0 0% 10%);
+  --surface: hsl(0 0% 12%); /* 16% -> 12% */
+  --surface-2: hsl(210 20% 9%);
 
-  --blue: hsl(217 91% 60%); /* #3b82f6 */
-  --green: hsl(142 72% 45%); /* #22c55e */
-  --amber: hsl(38 92% 50%); /* #f59e0b */
-  --red: hsl(0 84% 60%); /* #ef4444 */
+  /* Texte plus clair */
+  --text: hsl(0 0% 98%);
+  --muted: hsl(0 0% 80%); /* 75% -> 80% */
+  --muted-2: hsl(0 0% 62%); /* 55% -> 62% */
+
+  /* Accents assombris pour le texte blanc dans .status */
+  --blue: hsl(217 91% 48%);
+  --green: hsl(142 72% 28%); /* plus sombre pour AA+ */
+  --amber: hsl(38 92% 38%);
+  --red: hsl(0 84% 46%);
 
   /* Layout scale */
   --container-min: 320px;
@@ -66,7 +69,6 @@ body {
   background: var(--bg);
   color: var(--text);
   margin: 0;
-
   display: grid;
   place-items: center;
 }
@@ -136,7 +138,7 @@ main {
   transform: translateY(-2px);
 }
 
-.card h3 {
+.card h2 {
   margin: 0;
 }
 
@@ -288,7 +290,7 @@ main {
   }
 }
 
-/* Reduced motion: minimize movement without breaking affordances */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;
@@ -337,10 +339,23 @@ main {
 .explain-step {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--text);
+  color: var(--text) !important;
+}
+
+.explain-card.instant .explain-step .dot {
+  background: hsl(142 72% 34%);
+}
+
+.explain-card.stream .explain-step .dot {
+  background: hsl(38 92% 36%);
+}
+
+.explain-card.complete.explain-card .explain-step .dot,
+.explain-card.complete .explain-step .dot {
+  background: hsl(217 91% 42%);
 }
 
 .explain-step .dot {
@@ -372,7 +387,9 @@ main {
 
 .explain-card.complete {
   --accent: var(--blue);
-  border-color: var(--accent);
+  border-color: hsl(217 91% 42%);
+  animation: none !important;
+  background-image: none;
 }
 
 .explain-result {
@@ -381,11 +398,6 @@ main {
   grid-template-columns: 1.2fr 1fr;
   gap: var(--space-4);
   align-items: start;
-}
-
-.explain-card.complete {
-  animation: none !important;
-  background-image: none;
 }
 
 .explain-card:hover {

@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>HTMS 💨 Stream Async HTML, Stay SEO-Friendly</title>
+    <meta
+      name="description"
+      content="HTMS demo: stream asynchronous HTML chunks while staying SEO-friendly. See instant, progressive, and completed content render directly from the server."
+    />
+    <link rel="preload" href="index.css" as="style" />
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
@@ -13,12 +18,12 @@
         <p>Stream Async HTML, Stay SEO-Friendly</p>
       </header>
 
-      <div class="grid">
+      <section class="grid">
         <!-- STATIC: Instant load -->
         <div class="card static">
           <div class="status instant">INSTANT</div>
           <div class="metric">⚡</div>
-          <h3>Server Status</h3>
+          <h2>Server Status</h2>
           <p class="label">Always available</p>
           <p>This loads instantly because it's static HTML!</p>
         </div>
@@ -28,7 +33,7 @@
           <div class="loading-bar"></div>
           <div class="status streaming">STREAMING</div>
           <div class="metric">📊</div>
-          <h3>Streaming Data</h3>
+          <h2>Streaming Data</h2>
           <p class="label">Calculating...</p>
         </div>
 
@@ -36,7 +41,7 @@
         <div class="card static">
           <div class="status instant">INSTANT</div>
           <div class="metric">🖱️</div>
-          <h3>Accessibility</h3>
+          <h2>Accessibility</h2>
           <p class="label">Always</p>
           <p>Navigation & forms work immediately!</p>
         </div>
@@ -46,7 +51,7 @@
           <div class="loading-bar"></div>
           <div class="status streaming">STREAMING</div>
           <div class="metric">⏳</div>
-          <h3>User Stats</h3>
+          <h2>User Stats</h2>
           <p class="label">Loading...</p>
         </div>
 
@@ -55,7 +60,7 @@
           <div class="loading-bar"></div>
           <div class="status streaming">STREAMING</div>
           <div class="metric">🔍</div>
-          <h3>Analytics</h3>
+          <h2>Analytics</h2>
           <p class="label">Processing...</p>
         </div>
 
@@ -63,11 +68,11 @@
         <div class="card static">
           <div class="status instant">INSTANT</div>
           <div class="metric">💚</div>
-          <h3>System Health</h3>
+          <h2>System Health</h2>
           <p class="label">All systems go</p>
           <p>Static content = instant visibility!</p>
         </div>
-      </div>
+      </section>
 
       <section class="explain" aria-labelledby="explain-title">
         <h2 class="explain__title" id="explain-title">What's happening above?</h2>
@@ -101,7 +106,7 @@
 
           <article class="card explain-card explain-result" aria-label="Why it matters">
             <div>
-              <h3 style="margin: 0 0 var(--space-3)">Take a look</h3>
+              <h2 style="margin: 0 0 var(--space-3)">Take a look</h2>
               <p>Open DevTools and compare the server response with the final DOM.</p>
               <ul>
                 <li>Open DevTools (F12 or Cmd/Ctrl + Shift + I).</li>
