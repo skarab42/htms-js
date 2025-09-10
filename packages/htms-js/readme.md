@@ -181,6 +181,7 @@ createFileStream(filePath: string): ReadableStream<string>
 createHtmsTokenizer(): TransformStream<string, Token>
 createHtmsResolver(resolver: Resolver): TransformStream<Token, ResolverToken>
 createHtmsSerializer(): TransformStream<ResolverToken, string>
+createHtmsCompressor(encoding: Encoding): TransformStream<string, string | Buffer>
 
 // Pipelines
 createHtmsStringPipeline(html: string, resolver: Resolver): ReadableStream<string>

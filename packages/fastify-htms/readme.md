@@ -85,14 +85,16 @@ To also serve static assets (images, css, js), register [`@fastify/static`](http
 
 ## Options
 
-| Option           | Type                             | Description                                                 |
-| ---------------- | -------------------------------- | ----------------------------------------------------------- |
-| `root`           | `string`                         | Required. Folder that contains your `.html` files           |
-| `index`          | `string`                         | Default file to serve when a directory is requested         |
-| `match`          | `string`                         | Minimatch pattern to filter which files are handled by HTMS |
-| `createResolver` | `(filePath: string) => Resolver` | Custom resolver factory for HTMS                            |
-| `environment`    | `'development' \| 'production'`  | Set the environment                                         |
-| `cacheModule`    | `boolean`                        | Enable module caching                                       |
+| Option           | Type                             | Default                     | Description                                                 |
+| ---------------- | -------------------------------- | --------------------------- | ----------------------------------------------------------- |
+| `root`           | `string`                         |                             | Required. Folder that contains your `.html` files           |
+| `index`          | `string`                         | `'index.html'`              | Default file to serve when a directory is requested         |
+| `match`          | `string`                         | `'**/*.htm?(l)'`            | Minimatch pattern to filter which files are handled by HTMS |
+| `environment`    | `'development' \| 'production'`  | `'development'`             | Set the environment                                         |
+| `compression`    | `boolean`                        | `true`                      | Enable response compression                                 |
+| `encodings`      | `HtmsCompressorEncoding`         | `['br', 'gzip', 'deflate']` | Enable response compression                                 |
+| `cacheModule`    | `boolean`                        | `true`                      | Enable module caching                                       |
+| `createResolver` | `(filePath: string) => Resolver` | `undefined`                 | Custom resolver factory for HTMS                            |
 
 ---
 

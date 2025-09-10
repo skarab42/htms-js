@@ -97,6 +97,7 @@ Starts a local server that serves `.html` files and streams them through the HTM
 | `--port <port>`       | Port to listen on             | `4200`                                            |
 | `--root <path>`       | Root directory to serve       | `./public`                                        |
 | `--environment <env>` | `production` or `development` | `production`                                      |
+| `--compression`       | Enable response compression   | `true`                                            |
 | `--cache-module`      | Enable module caching         | `false` (`true` if `undefined` and `development`) |
 | `--logger`            | Enable logging                | `false` (`true` if `undefined` and `development`) |
 

@@ -40,13 +40,18 @@ describe('htms-server start', () => {
 
     expect(FastifyMock).toHaveBeenCalledExactlyOnceWith({ logger: true });
 
-    expect(registerMock).toHaveBeenCalledTimes(2);
+    expect(registerMock).toHaveBeenCalledTimes(3);
     expect(registerMock).toHaveBeenNthCalledWith(1, expect.any(Function), {
+      encodings: ['br', 'gzip', 'deflate'],
+      global: true,
+    });
+    expect(registerMock).toHaveBeenNthCalledWith(2, expect.any(Function), {
       environment: 'development',
       cacheModule: false,
       root: expectedRoot,
+      encodings: ['br', 'gzip', 'deflate'],
     });
-    expect(registerMock).toHaveBeenNthCalledWith(2, expect.any(Function), {
+    expect(registerMock).toHaveBeenNthCalledWith(3, expect.any(Function), {
       root: expectedRoot,
     });
 
@@ -71,13 +76,18 @@ describe('htms-server start', () => {
 
     expect(FastifyMock).toHaveBeenCalledExactlyOnceWith({ logger: false });
 
-    expect(registerMock).toHaveBeenCalledTimes(2);
+    expect(registerMock).toHaveBeenCalledTimes(3);
     expect(registerMock).toHaveBeenNthCalledWith(1, expect.any(Function), {
+      encodings: ['br', 'gzip', 'deflate'],
+      global: true,
+    });
+    expect(registerMock).toHaveBeenNthCalledWith(2, expect.any(Function), {
       environment: 'production',
       cacheModule: true,
       root: expectedRoot,
+      encodings: ['br', 'gzip', 'deflate'],
     });
-    expect(registerMock).toHaveBeenNthCalledWith(2, expect.any(Function), {
+    expect(registerMock).toHaveBeenNthCalledWith(3, expect.any(Function), {
       root: expectedRoot,
     });
 
