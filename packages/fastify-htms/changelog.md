@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.0](https://github.com/skarab42/htms-js/compare/fastify-htms@v0.1.0...fastify-htms@v0.2.0) (2025-09-10)
+
+
+### ✨ Features
+
+* zlib compression ([#9](https://github.com/skarab42/htms-js/issues/9)) ([19abc1f](https://github.com/skarab42/htms-js/commit/19abc1fcd6d39f8049cb1dc682061cd9650927fe))
+
+
+### 📝 Docs
+
+* add live demo link ([1a2ff57](https://github.com/skarab42/htms-js/commit/1a2ff576cc92960401233bb07789cde90ae7c397))
+* fix repo links ([9d9709a](https://github.com/skarab42/htms-js/commit/9d9709aab1099f17bb9db2cbaed439bd0c3839c3))
+
+
+### 🧹 Chores
+
+* add `license.md` to each packages ([ba24756](https://github.com/skarab42/htms-js/commit/ba247567a8d0d3e611efa5dcb4226c8940b55b58))
+* move `changelog.md` to package root ([bdede5d](https://github.com/skarab42/htms-js/commit/bdede5dc96a55656be6efc03218e91ecdc732308))
+
 ## 0.1.0 (2025-09-09)
 
 
