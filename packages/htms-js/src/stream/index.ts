@@ -1,3 +1,4 @@
+export * from './compressor.js';
 export * from './helpers.js';
 export * from './resolver.js';
 export * from './serializer.js';

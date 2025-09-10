@@ -1,10 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Writable } from 'node:stream';
+import { TransformStream } from 'node:stream/web';
 
 import type { FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
-import { createHtmsFilePipeline, createModuleResolver, type Resolver } from 'htms-js';
+import {
+  createHtmsCompressor,
+  createHtmsFilePipeline,
+  createModuleResolver,
+  type HtmsCompressorStream,
+  type Resolver,
+} from 'htms-js';
 import { minimatch } from 'minimatch';
 
 interface MatchingFilePathSettings {
@@ -47,12 +54,33 @@ export function getMatchingFilePath(settings: MatchingFilePathSettings): string 
 
 export type CreateResolver = (filePath: string) => Resolver;
 
+export type Encoding = 'br' | 'gzip' | 'deflate';
+
+export const encodings: Encoding[] = ['br', 'gzip', 'deflate']; // order matter
+
+export function parseAcceptEncodings(acceptEncoding: string | undefined): Encoding[] {
+  if (!acceptEncoding) {
+    return [];
+  }
+
+  return acceptEncoding
+    .split(',')
+    .map((part) => part.trim().split(';')[0] as Encoding)
+    .filter((part) => encodings.includes(part));
+}
+
+function findContentEncoding(allowedEncodings: Encoding[], acceptEncodings: Encoding[]): Encoding | undefined {
+  return allowedEncodings.find((encoding) => acceptEncodings.includes(encoding));
+}
+
 export type Environment = 'development' | 'production';
 
 export interface FastifyHtmsOptions {
   root: string;
   index?: string | undefined;
   match?: string | undefined;
+  compression?: boolean | undefined;
+  encodings?: Encoding[] | undefined;
   cacheModule?: boolean | undefined;
   createResolver?: CreateResolver | undefined;
   environment?: Environment | undefined;
@@ -67,6 +95,8 @@ const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
     index = 'index.html',
     match = '**/*.htm?(l)',
     environment = 'development',
+    compression = true,
+    encodings = ['br', 'gzip', 'deflate'],
     createResolver = (filePath) => createModuleResolver(filePath, { basePath: root, cacheModule }),
   } = options;
 
@@ -86,9 +116,21 @@ const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
       fastify.log.debug(options, 'createHtmsFileModulePipeline options');
 
       const stream = createHtmsFilePipeline(filePath, createResolver(filePath));
+      let compressor: HtmsCompressorStream = new TransformStream();
+
+      if (compression) {
+        const acceptEncodings = parseAcceptEncodings(request.headers['accept-encoding']);
+        const contentEncoding = findContentEncoding(encodings, acceptEncodings);
+
+        if (contentEncoding) {
+          compressor = createHtmsCompressor(contentEncoding);
+
+          reply.raw.setHeader('Content-Encoding', contentEncoding);
+        }
+      }
 
       reply.raw.setHeader('Content-Type', 'text/html; charset=utf-8');
-      await stream.pipeTo(Writable.toWeb(reply.raw));
+      await stream.pipeThrough(compressor).pipeTo(Writable.toWeb(reply.raw));
       reply.hijack();
     } catch (error) {
       const message = 'Internal Server Error';
