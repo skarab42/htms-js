@@ -50,7 +50,7 @@ describe('createHtmsResolver', () => {
     await expect(articlesTaskToken.task()).resolves.toBe('task done: getArticles');
   });
 
-  it('should ...', async () => {
+  it('should throw error when the task throw an error', async () => {
     mockRandomUUIDIncrement();
 
     const input = createFileStream(simpleHtmlFixture);

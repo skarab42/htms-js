@@ -13,7 +13,7 @@ export type ResolverToken = Token | TaskToken;
 export type ResolveTask = Task | PromiseLike<Task>;
 
 export interface Resolver {
-  resolve(info: TaskInfo): ResolveTask;
+  resolve(info: TaskInfo, specifier?: string | undefined): ResolveTask;
 }
 
 export function createTaskToken(info: TaskInfo, task: Task): TaskToken {
@@ -29,14 +29,22 @@ export type ResolverStream = TransformStream<Token, ResolverToken>;
 export function createHtmsResolver(resolver: Resolver): ResolverStream {
   const taskTokens: TaskToken[] = [];
 
+  let specifier: string | undefined;
+
   return new TransformStream({
     async transform(token, controller) {
       controller.enqueue(token);
 
+      if (token.type === 'htmsStartModule') {
+        specifier = token.specifier;
+      } else if (token.type === 'htmsEndModule') {
+        specifier = undefined;
+      }
+
       if (token.type === 'htmsTag') {
         try {
           const taskInfo = token.taskInfo;
-          const task = await resolver.resolve(taskInfo);
+          const task = await resolver.resolve(taskInfo, token.specifier ?? specifier);
 
           if (typeof task === 'function') {
             taskTokens.push(createTaskToken(taskInfo, task));

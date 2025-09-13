@@ -14,7 +14,7 @@ function resolveModule(basePath: string, specifier: string) {
 
     return { moduleUrl, resolvedModulePath };
   } catch (error) {
-    throw new Error(`[htms] module not found '${specifier}' at '${basePath}'`, { cause: error });
+    throw new Error(`Module not found '${specifier}' at '${basePath}'`, { cause: error });
   }
 }
 
@@ -24,40 +24,39 @@ export interface ModuleResolverOptions {
 }
 
 export class ModuleResolver implements Resolver {
-  readonly #resolvedModulePath: string;
+  readonly #basePath: string;
+  readonly #specifier: string;
   readonly #cacheModule: boolean;
-  readonly #moduleUrl: string;
 
   constructor(specifier: string, options?: ModuleResolverOptions) {
     const { basePath = process.cwd(), cacheModule = true } = options ?? {};
-    const { resolvedModulePath, moduleUrl } = resolveModule(basePath, specifier);
 
-    this.#resolvedModulePath = resolvedModulePath;
+    this.#basePath = basePath;
+    this.#specifier = specifier;
     this.#cacheModule = cacheModule;
-    this.#moduleUrl = moduleUrl;
   }
 
-  async #importModule(): Promise<Record<string, ResolveTask>> {
-    const taskModule = await import(this.#cacheModule ? this.#moduleUrl : `${this.#moduleUrl}#${Date.now()}`);
+  async #importModule(moduleUrl: string): Promise<Record<string, ResolveTask>> {
+    const taskModule = await import(this.#cacheModule ? moduleUrl : `${moduleUrl}#${Date.now()}`);
 
     return taskModule.default ?? taskModule;
   }
 
-  #findTask(info: TaskInfo, taskModule: Record<string, ResolveTask>): ResolveTask {
-    const task = taskModule[info.name];
-
-    if (typeof task !== 'function') {
-      throw new TypeError(`[htms] task function '${info.name}' not found in '${this.#resolvedModulePath}'`);
-    }
-
-    return task;
-  }
-
-  async resolve(info: TaskInfo): Promise<Task> {
+  async resolve(info: TaskInfo, specifier?: string | undefined): Promise<Task> {
     try {
-      const taskModule = await this.#importModule();
+      // TODO: cache module path resolution
+      const moduleSpecifier = specifier ?? this.#specifier;
+      const { resolvedModulePath, moduleUrl } = resolveModule(this.#basePath, moduleSpecifier);
+      const taskModule = await this.#importModule(moduleUrl);
+      const task = taskModule[info.name];
 
-      return this.#findTask(info, taskModule);
+      if (typeof task !== 'function') {
+        const error = new TypeError(`Task function '${info.name}' not found in '${resolvedModulePath}'`);
+
+        return () => Promise.reject(error);
+      }
+
+      return task;
     } catch (error) {
       return () => Promise.reject(error);
     }

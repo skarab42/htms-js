@@ -4,7 +4,7 @@ import { escapeAttribute } from 'entities/escape';
 
 import { getApiSource } from '../browser/index.js';
 import type { ResolverToken, TaskToken } from './resolver.js';
-import type { EndTagToken, HtmsTagToken, StartTag } from './tokenizer.js';
+import type { EndToken, StartTag, StartToken } from './tokenizer.js';
 
 const browserApiSource = getApiSource();
 
@@ -22,12 +22,15 @@ function formatStartTag(token: StartTag): string {
 
 type Controller = TransformStreamDefaultController<string>;
 
-function transformHtmsTag(token: HtmsTagToken, controller: Controller) {
-  token.tag.attrs.push({ name: 'data-htms-uuid', value: token.taskInfo.uuid });
-  controller.enqueue(formatStartTag(token.tag));
+function setHtmsAttribute(token: StartToken, name: string, value: string) {
+  token.tag.attrs.push({ name: `data-htms-${name}`, value });
 }
 
-function transformEndTag(token: EndTagToken, controller: Controller) {
+function removeHtmsAttribute(token: StartToken, name: string) {
+  token.tag.attrs = token.tag.attrs.filter((attribute) => attribute.name !== `data-htms-${name}`);
+}
+
+function processEndTag(token: EndToken, controller: Controller) {
   if (token.tag.tagName === 'html') {
     return; // skip html end tag
   }
@@ -44,23 +47,52 @@ function transformEndTag(token: EndTagToken, controller: Controller) {
   controller.enqueue(token.html);
 }
 
-async function runTask(token: TaskToken, controller: Controller): Promise<void> {
+async function runTask(token: TaskToken, controller: Controller, debug: boolean): Promise<void> {
   try {
     const output = await token.task();
 
     controller.enqueue(`<htms-chunk uuid="${token.uuid}">${output}</htms-chunk>\n`);
-  } catch (error) {
-    controller.enqueue(`<htms-chunk uuid="${token.uuid}"></htms-chunk>\n`);
-    // TODO: call `controller.error(error)` on dev mode!?
-    console.error(`unknown error from task [uuid=${token.uuid}, name=${token.name}]\n${error}`);
+  } catch (error_) {
+    const title = 'Unhandled Task Error';
+    const error = error_ instanceof Error ? error_ : new Error(String(error_));
+
+    // TODO: add real logging method!
+    console.error(title, error);
+
+    // TODO: make this customizable in some way...
+    controller.enqueue(`<htms-chunk uuid="${token.uuid}">\n`);
+    controller.enqueue(`<div data-htms-error>\n`);
+    controller.enqueue(`<h2>${title}</h2>\n`);
+
+    if (debug) {
+      controller.enqueue(`<pre>`);
+      controller.enqueue(`error: ${error.message}\n`);
+      controller.enqueue(`token: ${JSON.stringify(token, undefined, 2)}`);
+      controller.enqueue(`</pre>\n`);
+    } else {
+      controller.enqueue('<p>Oops! We hit an unexpected error here.</p>\n');
+      controller.enqueue('<p>Please contact the site administrator if the issue persists.</p>\n');
+    }
+
+    controller.enqueue(`</div>\n`);
+    controller.enqueue(`</htms-chunk>\n`);
   }
+}
+
+export class NoTaskFoundError extends Error {
+  override message = 'No task found';
 }
 
 const cleanEndTag = new Set(['html', 'body']);
 
 export type SerializerStream = TransformStream<ResolverToken, string>;
 
-export function createHtmsSerializer(): SerializerStream {
+export interface HtmsSerializerOptions {
+  debug?: boolean | undefined;
+}
+
+export function createHtmsSerializer(options?: HtmsSerializerOptions | undefined): SerializerStream {
+  const { debug = false } = options ?? {};
   const seenEndTags = new Set<string>();
   const taskTokens: TaskToken[] = [];
 
@@ -69,16 +101,24 @@ export function createHtmsSerializer(): SerializerStream {
   return new TransformStream({
     transform(token, controller) {
       switch (token.type) {
-        case 'endTag': {
+        case 'endTag':
+        case 'htmsEndModule': {
           const tagName = token.tag.tagName.toLocaleLowerCase();
 
           seenEndTags.add(tagName);
-          transformEndTag(token, controller);
+          processEndTag(token, controller);
           cleanNextToken = cleanEndTag.has(tagName);
           break;
         }
         case 'htmsTag': {
-          transformHtmsTag(token, controller);
+          removeHtmsAttribute(token, 'module');
+          setHtmsAttribute(token, 'uuid', token.taskInfo.uuid);
+          controller.enqueue(formatStartTag(token.tag));
+          break;
+        }
+        case 'htmsStartModule': {
+          removeHtmsAttribute(token, 'module');
+          controller.enqueue(formatStartTag(token.tag));
           break;
         }
         case 'task': {
@@ -98,8 +138,10 @@ export function createHtmsSerializer(): SerializerStream {
       }
     },
     async flush(controller) {
-      if (taskTokens.length > 0) {
-        await Promise.allSettled(taskTokens.map((token) => runTask(token, controller)));
+      const taskFound = taskTokens.length > 0;
+
+      if (taskFound) {
+        await Promise.allSettled(taskTokens.map((token) => runTask(token, controller, debug)));
       }
 
       try {
@@ -111,8 +153,12 @@ export function createHtmsSerializer(): SerializerStream {
         if (seenEndTags.has('html')) {
           controller.enqueue('</html>');
         }
+
+        if (!taskFound) {
+          controller.error(new NoTaskFoundError());
+        }
       } catch {
-        // noop - Invalid state: Unable to enqueue appends when the stream is cancelled
+        // noop - Invalid state: Unable to enqueue when the stream is canceled
       } finally {
         controller.terminate();
       }
