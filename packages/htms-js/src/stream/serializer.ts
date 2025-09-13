@@ -56,7 +56,8 @@ async function runTask(token: TaskToken, controller: Controller, debug: boolean)
     const title = 'Unhandled Task Error';
     const error = error_ instanceof Error ? error_ : new Error(String(error_));
 
-    // TODO: add real logging method!
+    // TODO: add better logging strategies
+    // eslint-disable-next-line no-console
     console.error(title, error);
 
     // TODO: make this customizable in some way...

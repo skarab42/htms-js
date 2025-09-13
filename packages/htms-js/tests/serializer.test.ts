@@ -52,7 +52,8 @@ describe('createHtmsSerializer', () => {
             <div data-htms="getArticles" data-htms-uuid="uuid-test-0000-0001-mock">loading...</div>
           </section>
           <footer>static footer</footer>
-        <script data-htms-remove-on-cleanup>(() => {
+        <script data-htms-remove-on-cleanup>/* eslint-disable no-console */
+      (() => {
         customElements.define(
           'htms-chunk',
           class HTMLChunk extends HTMLElement {

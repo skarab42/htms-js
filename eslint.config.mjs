@@ -17,6 +17,14 @@ export default defineConfig([
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
   {
+    ignores: ['**/examples/**'],
+    rules: {
+      'no-alert': 'error',
+      'no-console': 'warn',
+      'no-debugger': 'warn',
+    },
+  },
+  {
     plugins: {
       'simple-import-sort': simpleImportSort,
     },
