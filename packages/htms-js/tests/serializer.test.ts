@@ -2,7 +2,7 @@ import './fixtures/crypto.mock.js';
 
 import path from 'node:path';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   createFileStream,
@@ -52,7 +52,8 @@ describe('createHtmsSerializer', () => {
             <div data-htms="getArticles" data-htms-uuid="uuid-test-0000-0001-mock">loading...</div>
           </section>
           <footer>static footer</footer>
-        <script data-htms-remove-on-cleanup>(() => {
+        <script data-htms-remove-on-cleanup>/* eslint-disable no-console */
+      (() => {
         customElements.define(
           'htms-chunk',
           class HTMLChunk extends HTMLElement {
@@ -102,6 +103,7 @@ describe('createHtmsSerializer', () => {
   });
 
   it('should serialize a simple html file with [data-htms] attribute', async () => {
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(vi.fn());
     mockRandomUUIDIncrement();
 
     const html = '<div data-htms="goodTask"/>\n<div data-htms="badTask"/>\n';
@@ -110,7 +112,7 @@ describe('createHtmsSerializer', () => {
       resolve(info) {
         return () => {
           if (info.name === 'badTask') {
-            throw new Error(`Oupsy! Something wrong append in this task: ${info.name}`);
+            throw new Error(`Oupsy! Something wrong appended in this task: ${info.name}`);
           }
 
           return Promise.resolve(`good task done: ${info.name}`);
@@ -121,12 +123,78 @@ describe('createHtmsSerializer', () => {
     const output = input
       .pipeThrough(createHtmsTokenizer())
       .pipeThrough(createHtmsResolver(resolver))
-      .pipeThrough(createHtmsSerializer());
+      .pipeThrough(createHtmsSerializer({ debug: false }));
 
-    expect(await collectString(output)).toMatchInlineSnapshot(`
+    const outputString = await collectString(output);
+
+    expect(consoleErrorMock).toHaveBeenCalledExactlyOnceWith(
+      'Unhandled Task Error',
+      expect.objectContaining({
+        message: 'Oupsy! Something wrong appended in this task: badTask',
+      }),
+    );
+
+    expect(outputString).toMatchInlineSnapshot(`
       "<div data-htms="goodTask" data-htms-uuid="uuid-test-0000-0000-mock"/>
       <div data-htms="badTask" data-htms-uuid="uuid-test-0000-0001-mock"/>
-      <htms-chunk uuid="uuid-test-0000-0001-mock"></htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0001-mock">
+      <div data-htms-error>
+      <h2>Unhandled Task Error</h2>
+      <p>Oops! We hit an unexpected error here.</p>
+      <p>Please contact the site administrator if the issue persists.</p>
+      </div>
+      </htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock">good task done: goodTask</htms-chunk>
+      "
+    `);
+  });
+
+  it('should serialize a simple html file with [data-htms] attribute (debug = true)', async () => {
+    const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(vi.fn());
+    mockRandomUUIDIncrement();
+
+    const html = '<div data-htms="goodTask"/>\n<div data-htms="badTask"/>\n';
+    const input = createStringStream(html);
+    const resolver: Resolver = {
+      resolve(info) {
+        return () => {
+          if (info.name === 'badTask') {
+            throw new Error(`Oupsy! Something wrong appended in this task: ${info.name}`);
+          }
+
+          return Promise.resolve(`good task done: ${info.name}`);
+        };
+      },
+    };
+
+    const output = input
+      .pipeThrough(createHtmsTokenizer())
+      .pipeThrough(createHtmsResolver(resolver))
+      .pipeThrough(createHtmsSerializer({ debug: true }));
+
+    const outputString = await collectString(output);
+
+    expect(consoleErrorMock).toHaveBeenCalledExactlyOnceWith(
+      'Unhandled Task Error',
+      expect.objectContaining({
+        message: 'Oupsy! Something wrong appended in this task: badTask',
+      }),
+    );
+
+    expect(outputString).toMatchInlineSnapshot(`
+      "<div data-htms="goodTask" data-htms-uuid="uuid-test-0000-0000-mock"/>
+      <div data-htms="badTask" data-htms-uuid="uuid-test-0000-0001-mock"/>
+      <htms-chunk uuid="uuid-test-0000-0001-mock">
+      <div data-htms-error>
+      <h2>Unhandled Task Error</h2>
+      <pre>error: Oupsy! Something wrong appended in this task: badTask
+      token: {
+        "type": "task",
+        "name": "badTask",
+        "uuid": "uuid-test-0000-0001-mock"
+      }</pre>
+      </div>
+      </htms-chunk>
       <htms-chunk uuid="uuid-test-0000-0000-mock">good task done: goodTask</htms-chunk>
       "
     `);

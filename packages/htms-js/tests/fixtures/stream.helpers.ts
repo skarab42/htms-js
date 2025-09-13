@@ -1,4 +1,4 @@
-import { ReadableStream } from 'node:stream/web';
+import { type ReadableStream } from 'node:stream/web';
 
 export async function collect<T>(stream: ReadableStream<T>): Promise<T[]> {
   const chunks: T[] = [];
