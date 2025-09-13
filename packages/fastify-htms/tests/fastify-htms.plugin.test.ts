@@ -3,7 +3,8 @@ import './fixtures/crypto.mock.js';
 import path from 'node:path';
 
 import Fastify, { type FastifyInstance } from 'fastify';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { NoTaskFoundError } from 'htms-js';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { fastifyHtms } from '../src/index.js';
 import { mockRandomUUIDIncrement } from './fixtures/crypto.mock.js';
@@ -41,12 +42,16 @@ describe('fastifyHtms (environment = development)', () => {
     expect(response.statusCode).toBe(404);
   });
 
-  it('should returns error 500 for matching file without js file', async () => {
+  it('should log error if no task is found but not break the stream', async () => {
+    const spy = vi.spyOn(app.log, 'error');
     const response = await app.inject({ method: 'GET', url: '/index.html' });
+    const fixturePath = path.join(root, 'index.html');
 
-    expect(response.statusCode).toBe(500);
-    expect(response.headers['content-type']).toContain('text/plain');
-    expect(response.body).toContain('Internal Server Error: Error: [htms] module not found');
+    expect(spy).toHaveBeenCalledWith(expect.any(NoTaskFoundError), `No task found for '${fixturePath}'`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toContain('text/html; charset=utf-8');
+    expect(response.body).toContain(`<!-- Task Module Not Found Error: No task found for '${fixturePath}' -->`);
   });
 
   it('should ignores non-matching paths and lets Fastify handle 404', async () => {
@@ -69,11 +74,15 @@ describe('fastifyHtms plugin (environment = production)', () => {
     await app.close();
   });
 
-  it('should returns error 500 without extended error message in production', async () => {
+  it('should log error if no task is found without extended error message in production output', async () => {
+    const spy = vi.spyOn(app.log, 'error');
     const response = await app.inject({ method: 'GET', url: '/index.html' });
+    const fixturePath = path.join(root, 'index.html');
 
-    expect(response.statusCode).toBe(500);
-    expect(response.headers['content-type']).toContain('text/plain');
-    expect(response.body).toBe('Internal Server Error');
+    expect(spy).toHaveBeenCalledWith(expect.any(NoTaskFoundError), `No task found for '${fixturePath}'`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toContain('text/html; charset=utf-8');
+    expect(response.body).toContain(`<!-- Task Module Not Found Error -->`);
   });
 });

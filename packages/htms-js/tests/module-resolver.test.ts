@@ -9,12 +9,6 @@ const fixturesDirectory = path.resolve(import.meta.dirname, 'fixtures', 'tasks')
 const uuidMock = 'uuid-test-0000-0000-mock';
 
 describe('ModuleResolver', () => {
-  it('should throws in the constructor when the module path does not exist', () => {
-    expect(() => new ModuleResolver('does-not-exist.mjs', { basePath: fixturesDirectory })).toThrow(
-      `[htms] module not found 'does-not-exist.mjs' at '${fixturesDirectory}'`,
-    );
-  });
-
   it('should rejects task when the function is missing', async () => {
     const file = path.resolve(fixturesDirectory, 'empty.ts');
     const resolver = new ModuleResolver(file);
@@ -22,7 +16,7 @@ describe('ModuleResolver', () => {
 
     const task = await resolver.resolve(info);
 
-    await expect(task()).rejects.toThrow(`[htms] task function 'notThere' not found in '${file}'`);
+    await expect(task()).rejects.toThrow(`Task function 'notThere' not found in '${file}'`);
   });
 
   it('should resolves a named exported function', async () => {
