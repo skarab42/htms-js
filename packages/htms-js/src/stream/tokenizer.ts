@@ -65,6 +65,7 @@ export type TokenizerStream = TransformStream<string | Buffer, Token>;
 export function createHtmsTokenizer(): TokenizerStream {
   const rewriter = new RewritingStream();
   const tokenStack: StartToken[] = [];
+  const scopes: string[] = [];
 
   return new TransformStream({
     start(controller) {
@@ -85,11 +86,12 @@ export function createHtmsTokenizer(): TokenizerStream {
         if (dataHtms) {
           const taskInfo: TaskInfo = { name: dataHtms, uuid: randomUUID() };
 
-          pushStartToken({ type: 'htmsTag', tag, html, taskInfo, specifier: htmsModule });
+          pushStartToken({ type: 'htmsTag', tag, html, taskInfo, specifier: htmsModule ?? scopes.at(-1) });
           return;
         }
 
         if (htmsModule) {
+          scopes.push(htmsModule);
           pushStartToken({ type: 'htmsStartModule', tag, html, specifier: htmsModule });
           return;
         }
@@ -113,6 +115,7 @@ export function createHtmsTokenizer(): TokenizerStream {
         }
 
         if (lastToken.type === 'htmsStartModule') {
+          scopes.pop();
           controller.enqueue({ type: 'htmsEndModule', tag, html, specifier: lastToken.specifier });
           return;
         }

@@ -29,22 +29,14 @@ export type ResolverStream = TransformStream<Token, ResolverToken>;
 export function createHtmsResolver(resolver: Resolver): ResolverStream {
   const taskTokens: TaskToken[] = [];
 
-  let specifier: string | undefined;
-
   return new TransformStream({
     async transform(token, controller) {
       controller.enqueue(token);
 
-      if (token.type === 'htmsStartModule') {
-        specifier = token.specifier;
-      } else if (token.type === 'htmsEndModule') {
-        specifier = undefined;
-      }
-
       if (token.type === 'htmsTag') {
         try {
           const taskInfo = token.taskInfo;
-          const task = await resolver.resolve(taskInfo, token.specifier ?? specifier);
+          const task = await resolver.resolve(taskInfo, token.specifier);
 
           if (typeof task === 'function') {
             taskTokens.push(createTaskToken(taskInfo, task));
