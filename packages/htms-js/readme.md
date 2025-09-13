@@ -12,6 +12,7 @@
 
 - **Instant rendering:** browsers show HTML immediately.
 - **Progressive async:** placeholders stream in as soon as ready.
+- **Scoped modules:** keep tasks organized by context, even with nested `data-htms-module` blocks.
 - **SEO intact:** bots see full HTML.
 - **Tiny runtime:** one Web Component, injected automatically.
 - **Tech-agnostic:** works with Express, Fastify, Hono, workers, or even raw `stdout`.
@@ -84,7 +85,36 @@ app.listen(3000);
 
 Visit `http://localhost:3000`: content renders immediately, then fills itself in.
 
-> **Note:** By default, `createHtmsFileModulePipeline('./home-page.html')` resolves `./home-page.js`. To use a different file or your own [resolver](#custom-resolvers), see [API](#api).
+### About module resolution
+
+When you call `createHtmsFileModulePipeline('./home-page.html')`, HTMS will automatically look for a sibling module file named `./home-page.js` and resolve tasks from there. If you want to:
+
+- **Mix several modules on the same page** → see [Scoped modules](#scoped-modules).
+- **Point to another file** → use the `specifier` option in the [API](#api).
+- **Provide your own logic** → see [Custom resolvers](#custom-resolvers).
+
+---
+
+## Scoped modules
+
+HTMS supports scoped modules, meaning tasks can resolve from different modules depending on context. You can nest modules and HTMS will pick the right scope for each placeholder.
+
+```html
+<section data-htms-module="root-module.js">
+  <div data-htms="taskA">loading task A from 'root-module.js'...</div>
+  <div data-htms="taskA" data-htms-module="child-module.js">loading task A from 'child-module.js'...</div>
+
+  <div data-htms-module="child-module.js">
+    <div data-htms="taskA">loading task A from 'child-module.js'...</div>
+    <div data-htms="taskA" data-htms-module="root-module.js">loading task A from 'root-module.js'...</div>
+  </div>
+
+  <div data-htms="taskB">loading task B from 'root-module.js'...</div>
+  <div data-htms="taskB" data-htms-module="child-module.js">loading task B from 'child-module.js'...</div>
+</section>
+```
+
+This makes it easier to compose and reuse modules without conflicts.
 
 ---
 

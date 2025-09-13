@@ -11,6 +11,7 @@ import {
   createModuleResolver,
   type HtmsCompressorEncoding,
   type HtmsCompressorStream,
+  NoTaskFoundError,
   type Resolver,
 } from 'htms-js';
 import { minimatch } from 'minimatch';
@@ -53,7 +54,7 @@ export function getMatchingFilePath(settings: MatchingFilePathSettings): string 
   return fileState.isFile() ? filePath : undefined;
 }
 
-export type CreateResolver = (filePath: string) => Resolver;
+export type CreateResolver = (filePath: string, basePath?: string | undefined) => Resolver;
 
 export const encodings: HtmsCompressorEncoding[] = ['br', 'gzip', 'deflate']; // order matter
 
@@ -99,8 +100,10 @@ const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
     environment = 'development',
     compression = true,
     encodings = ['br', 'gzip', 'deflate'],
-    createResolver = (filePath) => createModuleResolver(filePath, { basePath: root, cacheModule }),
+    createResolver = (filePath, basePath = root) => createModuleResolver(filePath, { basePath, cacheModule }),
   } = options;
+
+  const debug = environment === 'development';
 
   fastify.addHook('onRequest', async (request, reply) => {
     if (request.method !== 'GET') {
@@ -117,7 +120,8 @@ const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
       fastify.log.info({ filePath }, 'create htms file module pipeline');
       fastify.log.debug(options, 'createHtmsFileModulePipeline options');
 
-      const stream = createHtmsFilePipeline(filePath, createResolver(filePath));
+      const resolver = createResolver(filePath, path.dirname(filePath));
+      const stream = createHtmsFilePipeline(filePath, resolver, { serializerOptions: { debug } });
       let compressor: HtmsCompressorStream = new TransformStream();
 
       if (compression) {
@@ -131,21 +135,31 @@ const fastifyHtmsCallback: FastifyHtmsPlugin = async (fastify, options) => {
         }
       }
 
+      reply.hijack();
       reply.raw.setHeader('Content-Type', 'text/html; charset=utf-8');
       await stream.pipeThrough(compressor).pipeTo(Writable.toWeb(reply.raw));
-      reply.hijack();
     } catch (error) {
-      const message = 'Internal Server Error';
+      let title = 'Internal Server Error';
+      let message = String(error);
+
+      if (error instanceof NoTaskFoundError) {
+        title = 'Task Module Not Found Error';
+        message = `${error.message} for '${filePath}'`;
+      }
 
       fastify.log.error(error, message);
 
+      const outputMessage = debug ? `${title}: ${message}` : title;
+
       if (reply.raw.headersSent) {
-        reply.raw.destroy(error instanceof Error ? error : new Error(String(error)));
+        reply.raw.write(`<!-- ${outputMessage} -->`);
       } else {
         reply.raw.statusCode = 500;
         reply.raw.setHeader('Content-Type', 'text/plain; charset=utf-8');
-        reply.raw.end(environment === 'development' ? `${message}: ${error}` : message);
+        reply.raw.write(outputMessage);
       }
+    } finally {
+      reply.raw.end();
     }
   });
 };

@@ -81,6 +81,29 @@ When you run the server, `htms-js` will scan the HTML for elements with `data-ht
 
 ---
 
+## Scoped modules
+
+HTMS supports scoped modules, meaning tasks can resolve from different modules depending on context. You can nest modules and HTMS will pick the right scope for each placeholder.
+
+```html
+<section data-htms-module="root-module.js">
+  <div data-htms="taskA">loading task A from 'root-module.js'...</div>
+  <div data-htms="taskA" data-htms-module="child-module.js">loading task A from 'child-module.js'...</div>
+
+  <div data-htms-module="child-module.js">
+    <div data-htms="taskA">loading task A from 'child-module.js'...</div>
+    <div data-htms="taskA" data-htms-module="root-module.js">loading task A from 'root-module.js'...</div>
+  </div>
+
+  <div data-htms="taskB">loading task B from 'root-module.js'...</div>
+  <div data-htms="taskB" data-htms-module="child-module.js">loading task B from 'child-module.js'...</div>
+</section>
+```
+
+This makes it easier to compose and reuse modules without conflicts.
+
+---
+
 ## Usage
 
 ```bash

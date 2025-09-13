@@ -5,16 +5,21 @@ import url from 'node:url';
 
 import type { Resolver, ResolveTask, Task, TaskInfo } from '../stream/index.js';
 
-function resolveModule(basePath: string, specifier: string) {
+interface ResolvedModule {
+  url: string;
+  path: string;
+}
+
+function resolveModule(basePath: string, specifier: string): ResolvedModule {
   try {
     const require = createRequire(import.meta.url);
     const modulePath = path.resolve(basePath, specifier);
     const resolvedModulePath = require.resolve(modulePath);
     const moduleUrl = url.pathToFileURL(resolvedModulePath).href;
 
-    return { moduleUrl, resolvedModulePath };
+    return { url: moduleUrl, path: resolvedModulePath };
   } catch (error) {
-    throw new Error(`[htms] module not found '${specifier}' at '${basePath}'`, { cause: error });
+    throw new Error(`Module not found '${specifier}' at '${basePath}'`, { cause: error });
   }
 }
 
@@ -24,40 +29,51 @@ export interface ModuleResolverOptions {
 }
 
 export class ModuleResolver implements Resolver {
-  readonly #resolvedModulePath: string;
+  readonly #basePath: string;
+  readonly #specifier: string;
   readonly #cacheModule: boolean;
-  readonly #moduleUrl: string;
+  readonly #resolvedModules = new Map<string, ResolvedModule>();
 
   constructor(specifier: string, options?: ModuleResolverOptions) {
     const { basePath = process.cwd(), cacheModule = true } = options ?? {};
-    const { resolvedModulePath, moduleUrl } = resolveModule(basePath, specifier);
 
-    this.#resolvedModulePath = resolvedModulePath;
+    this.#basePath = basePath;
+    this.#specifier = specifier;
     this.#cacheModule = cacheModule;
-    this.#moduleUrl = moduleUrl;
   }
 
-  async #importModule(): Promise<Record<string, ResolveTask>> {
-    const taskModule = await import(this.#cacheModule ? this.#moduleUrl : `${this.#moduleUrl}#${Date.now()}`);
+  #resolveModule(specifier: string): ResolvedModule {
+    let resolvedModule = this.#resolvedModules.get(specifier);
+
+    if (!resolvedModule) {
+      resolvedModule = resolveModule(this.#basePath, specifier);
+
+      this.#resolvedModules.set(specifier, resolvedModule);
+    }
+
+    return resolvedModule;
+  }
+
+  async #importModule(moduleUrl: string): Promise<Record<string, ResolveTask>> {
+    const taskModule = await import(this.#cacheModule ? moduleUrl : `${moduleUrl}#${Date.now()}`);
 
     return taskModule.default ?? taskModule;
   }
 
-  #findTask(info: TaskInfo, taskModule: Record<string, ResolveTask>): ResolveTask {
-    const task = taskModule[info.name];
-
-    if (typeof task !== 'function') {
-      throw new TypeError(`[htms] task function '${info.name}' not found in '${this.#resolvedModulePath}'`);
-    }
-
-    return task;
-  }
-
-  async resolve(info: TaskInfo): Promise<Task> {
+  async resolve(info: TaskInfo, specifier?: string | undefined): Promise<Task> {
     try {
-      const taskModule = await this.#importModule();
+      const moduleSpecifier = specifier ?? this.#specifier;
+      const resolvedModule = this.#resolveModule(moduleSpecifier);
+      const taskModule = await this.#importModule(resolvedModule.url);
+      const task = taskModule[info.name];
 
-      return this.#findTask(info, taskModule);
+      if (typeof task !== 'function') {
+        const error = new TypeError(`Task function '${info.name}' not found in '${resolvedModule.path}'`);
+
+        return () => Promise.reject(error);
+      }
+
+      return task;
     } catch (error) {
       return () => Promise.reject(error);
     }

@@ -1,0 +1,12 @@
+<section data-htms-module="root-module.js">
+  <div data-htms="taskA">loading task A from 'root-module.js'...</div>
+  <div data-htms="taskA" data-htms-module="child-module.js">loading task A from 'child-module.js'...</div>
+
+  <div data-htms-module="child-module.js">
+    <div data-htms="taskA">loading task A from 'child-module.js'...</div>
+    <div data-htms="taskA" data-htms-module="root-module.js">loading task A from 'root-module.js'...</div>
+  </div>
+
+  <div data-htms="taskB">loading task B from 'root-module.js'...</div>
+  <div data-htms="taskB" data-htms-module="child-module.js">loading task B from 'child-module.js'...</div>
+</section>
