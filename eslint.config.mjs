@@ -36,6 +36,20 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      'no-throw-literal': 'error',
+      '@typescript-eslint/prefer-ts-expect-error': 'warn',
+      '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
+      '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
+      '@typescript-eslint/consistent-type-imports': [
+        'warn',
+        {
+          prefer: 'type-imports',
+          disallowTypeAnnotations: true,
+          fixStyle: 'inline-type-imports',
+        },
+      ],
+    },
   },
   prettier,
 ]);
