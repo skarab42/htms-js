@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 (() => {
   customElements.define(
     'htms-chunk',

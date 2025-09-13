@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } fr
 import * as server from '../src/index.js';
 
 vi.mock('../src/index.js', async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const actual = (await importOriginal()) as typeof import('../src/index.js');
 
   return { ...actual, start: vi.fn() };
