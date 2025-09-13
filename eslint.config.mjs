@@ -17,6 +17,14 @@ export default defineConfig([
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
   {
+    ignores: ['**/examples/**'],
+    rules: {
+      'no-alert': 'error',
+      'no-console': 'warn',
+      'no-debugger': 'warn',
+    },
+  },
+  {
     plugins: {
       'simple-import-sort': simpleImportSort,
     },
@@ -35,6 +43,20 @@ export default defineConfig([
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
+    },
+    rules: {
+      'no-throw-literal': 'error',
+      '@typescript-eslint/prefer-ts-expect-error': 'warn',
+      '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
+      '@typescript-eslint/consistent-type-definitions': ['warn', 'interface'],
+      '@typescript-eslint/consistent-type-imports': [
+        'warn',
+        {
+          prefer: 'type-imports',
+          disallowTypeAnnotations: true,
+          fixStyle: 'inline-type-imports',
+        },
+      ],
     },
   },
   prettier,

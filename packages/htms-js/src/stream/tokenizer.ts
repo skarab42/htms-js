@@ -69,7 +69,7 @@ export function createHtmsTokenizer(): TokenizerStream {
 
   return new TransformStream({
     start(controller) {
-      function pushStartToken(token: StartToken) {
+      function pushStartToken(token: StartToken): void {
         controller.enqueue(token);
 
         if (!token.tag.selfClosing) {

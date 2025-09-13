@@ -22,15 +22,15 @@ function formatStartTag(token: StartTag): string {
 
 type Controller = TransformStreamDefaultController<string>;
 
-function setHtmsAttribute(token: StartToken, name: string, value: string) {
+function setHtmsAttribute(token: StartToken, name: string, value: string): void {
   token.tag.attrs.push({ name: `data-htms-${name}`, value });
 }
 
-function removeHtmsAttribute(token: StartToken, name: string) {
+function removeHtmsAttribute(token: StartToken, name: string): void {
   token.tag.attrs = token.tag.attrs.filter((attribute) => attribute.name !== `data-htms-${name}`);
 }
 
-function processEndTag(token: EndToken, controller: Controller) {
+function processEndTag(token: EndToken, controller: Controller): void {
   if (token.tag.tagName === 'html') {
     return; // skip html end tag
   }
@@ -56,7 +56,8 @@ async function runTask(token: TaskToken, controller: Controller, debug: boolean)
     const title = 'Unhandled Task Error';
     const error = error_ instanceof Error ? error_ : new Error(String(error_));
 
-    // TODO: add real logging method!
+    // TODO: add better logging strategies
+    // eslint-disable-next-line no-console
     console.error(title, error);
 
     // TODO: make this customizable in some way...
