@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build-test:
-    name: Lint • Format • Build • Test (Node ${{ matrix.node-version }})
+    name: Lint • Format • Build • Test • Coverage (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     env:
       CI: true
@@ -25,19 +25,19 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
         run: pnpm lint:check
@@ -48,5 +48,29 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Test
-        run: pnpm test
+      - name: Test • Coverage
+        run: pnpm coverage
+
+      - name: Upload htms-js coverage
+        uses: codecov/codecov-action@v5
+        with:
+          name: htms-js
+          flags: htms-js
+          files: ./packages/htms-js/coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Upload fastify-htms coverage
+        uses: codecov/codecov-action@v5
+        with:
+          name: fastify-htms
+          flags: fastify-htms
+          files: ./packages/fastify-htms/coverage/lcov.info
+          fail_ci_if_error: true
+
+      - name: Upload htms-server coverage
+        uses: codecov/codecov-action@v5
+        with:
+          name: htms-server
+          flags: htms-server
+          files: ./packages/htms-server/coverage/lcov.info
+          fail_ci_if_error: true

@@ -20,9 +20,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.js"
     }
   },
   "files": [
@@ -32,7 +32,10 @@
     "clean": "rimraf ./dist",
     "build": "pnpm clean && tsc -p ./tsconfig.build.json",
     "build:check": "tsc -p ./tsconfig.json",
-    "build:watch": "pnpm build --watch"
+    "build:watch": "pnpm build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "fastify-plugin": "^5.0.1",
