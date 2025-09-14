@@ -1,4 +1,12 @@
-# htms workspace 💨 Stream Async HTML, Stay SEO-Friendly
+# htms 💨 Stream Async HTML, Stay SEO-Friendly
+
+[![npm htms-js](https://img.shields.io/npm/v/htms-js.svg?label=htms-js&color=blue)](./packages/htms-js)
+[![npm fastify-htms](https://img.shields.io/npm/v/fastify-htms.svg?label=fastify-htms&color=blue)](./packages/fastify-htms)
+[![npm fastify-htms](https://img.shields.io/npm/v/htms-server.svg?label=htms-server&color=blue)](./packages/htms-server)
+[![build status](https://img.shields.io/github/actions/workflow/status/skarab42/htms-js/ci.yml?branch=main&label=ci)](https://github.com/skarab42/htms-js/actions)
+[![codecov](https://codecov.io/github/skarab42/htms-js/branch/main/graph/badge.svg)](https://codecov.io/github/skarab42/htms-js)
+[![license](https://img.shields.io/github/license/skarab42/htms-js)](./license.md)
+[![stars](https://img.shields.io/github/stars/skarab42/htms-js?style=social)](https://github.com/skarab42/htms-js/stargazers)
 
 > Send HTML that **renders instantly**, then **fills itself in** as async tasks complete. One response. No hydration. No empty shells.
 

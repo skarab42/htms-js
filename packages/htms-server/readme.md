@@ -1,5 +1,12 @@
 # htms-server
 
+[![npm version](https://img.shields.io/npm/v/htms-server.svg?color=blue)](https://www.npmjs.com/package/htms-server)
+[![build status](https://img.shields.io/github/actions/workflow/status/skarab42/htms-js/ci.yml?branch=main&label=ci)](https://github.com/skarab42/htms-js/actions)
+[![codecov](https://codecov.io/github/skarab42/htms-js/branch/main/graph/badge.svg?flag=htms-server)](https://codecov.io/github/skarab42/htms-js)
+[![install size](https://packagephobia.com/badge?p=htms-server)](https://packagephobia.com/result?p=htms-server)
+[![license](https://img.shields.io/github/license/skarab42/htms-js)](./license.md)
+[![stars](https://img.shields.io/github/stars/skarab42/htms-js?style=social)](https://github.com/skarab42/htms-js/stargazers)
+
 Small CLI to quickly test HTML streaming with [htms-js](https://github.com/skarab42/htms-js) without writing code.
 
 ---
