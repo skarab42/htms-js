@@ -118,9 +118,6 @@ importers:
 
   packages/fastify-htms:
     dependencies:
-      fastify:
-        specifier: ^5.5.0
-        version: 5.6.0
       fastify-plugin:
         specifier: ^5.0.1
         version: 5.0.1
@@ -130,6 +127,10 @@ importers:
       minimatch:
         specifier: ^10.0.3
         version: 10.0.3
+    devDependencies:
+      fastify:
+        specifier: ^5.5.0
+        version: 5.6.0
 
   packages/htms-js:
     dependencies:
