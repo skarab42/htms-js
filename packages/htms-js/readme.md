@@ -1,5 +1,12 @@
 # htms-js 💨 Stream Async HTML, Stay SEO-Friendly
 
+[![npm version](https://img.shields.io/npm/v/htms-js.svg?color=blue)](https://www.npmjs.com/package/htms-js)
+[![build status](https://img.shields.io/github/actions/workflow/status/skarab42/htms-js/ci.yml?branch=main&label=ci)](https://github.com/skarab42/htms-js/actions)
+[![codecov](https://codecov.io/github/skarab42/htms-js/branch/main/graph/badge.svg?flag=htms-js)](https://codecov.io/github/skarab42/htms-js)
+[![install size](https://packagephobia.com/badge?p=htms-js)](https://packagephobia.com/result?p=htms-js)
+[![license](https://img.shields.io/github/license/skarab42/htms-js)](./license.md)
+[![stars](https://img.shields.io/github/stars/skarab42/htms-js?style=social)](https://github.com/skarab42/htms-js/stargazers)
+
 > Send HTML that **renders instantly**, then **fills itself in** as async tasks complete. One response. No hydration. No empty shells.
 
 `htms-js` is an **early-stage project**: a proposal to progressively render HTML with async functions, while staying SEO-friendly and lightweight. It's not meant as _the new default_, but as an **alternative** that can fit into many stacks or frameworks.

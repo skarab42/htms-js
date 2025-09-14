@@ -1,5 +1,12 @@
 # fastify-htms
 
+[![npm version](https://img.shields.io/npm/v/fastify-htms.svg?color=blue)](https://www.npmjs.com/package/fastify-htms)
+[![build status](https://img.shields.io/github/actions/workflow/status/skarab42/htms-js/ci.yml?branch=main&label=ci)](https://github.com/skarab42/htms-js/actions)
+[![codecov](https://codecov.io/github/skarab42/htms-js/branch/main/graph/badge.svg?flag=fastify-htms)](https://codecov.io/github/skarab42/htms-js)
+[![install size](https://packagephobia.com/badge?p=fastify-htms)](https://packagephobia.com/result?p=fastify-htms)
+[![license](https://img.shields.io/github/license/skarab42/htms-js)](./license.md)
+[![stars](https://img.shields.io/github/stars/skarab42/htms-js?style=social)](https://github.com/skarab42/htms-js/stargazers)
+
 Fastify plugin that integrates [htms-js](https://github.com/skarab42/htms-js) with Fastify.
 
 ---

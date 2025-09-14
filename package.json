@@ -10,13 +10,13 @@
     "format": "prettier **/* --ignore-unknown",
     "format:write": "pnpm format --write",
     "format:check": "pnpm format --check",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "coverage": "vitest run --coverage",
+    "test": "pnpm -r test",
+    "test:watch": "pnpm -r test:watch",
+    "coverage": "pnpm -r coverage",
     "build": "pnpm -r build",
     "build:check": "pnpm -r build:check",
     "check": "pnpm format:check && pnpm lint:check && pnpm build:check && pnpm test",
-    "reset": "rimraf --glob ./pnpm-lock.yaml **/node_modules **/dist "
+    "reset": "rimraf --glob ./pnpm-lock.yaml **/node_modules **/dist **/coverage"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
