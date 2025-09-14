@@ -15,7 +15,7 @@ Fastify plugin that integrates [htms-js](https://github.com/skarab42/htms-js) wi
 Use your preferred package manager to install the plugin:
 
 ```bash
-pnpm add htms-js
+pnpm add fastify fastify-htms
 ```
 
 ---

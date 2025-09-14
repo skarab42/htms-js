@@ -35,10 +35,15 @@
     "build:watch": "pnpm build --watch"
   },
   "dependencies": {
-    "fastify": "^5.5.0",
     "fastify-plugin": "^5.0.1",
     "htms-js": "workspace:*",
     "minimatch": "^10.0.3"
+  },
+  "devDependencies": {
+    "fastify": "^5.5.0"
+  },
+  "peerDependencies": {
+    "fastify": ">=5"
   },
   "packageManager": "pnpm@10.15.1",
   "engines": {
