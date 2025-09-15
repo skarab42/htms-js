@@ -21,3 +21,7 @@ export function formatPercent(input, rounded = true) {
     maximumFractionDigits: fractionDigits,
   }).format(input / 100);
 }
+
+export function minRead() {
+  return `<a href="#"><small>${Math.round(randomBetween(1, 5))} min read</small></a>`;
+}
