@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0](https://github.com/skarab42/htms-js/compare/htms-server@v0.2.0...htms-server@v0.3.0) (2025-09-16)
+
+
+### ✨ Features
+
+* scoped modules ([#13](https://github.com/skarab42/htms-js/issues/13)) ([2f5f742](https://github.com/skarab42/htms-js/commit/2f5f742f205c50b580d0d51debfe217ba445b1db))
+
+
+### ⚙️ CI
+
+* code coverage ([#19](https://github.com/skarab42/htms-js/issues/19)) ([8a18a4f](https://github.com/skarab42/htms-js/commit/8a18a4f215b9977ef5532ff7b507b0bd0076c0c3))
+* code quality workflow ([#14](https://github.com/skarab42/htms-js/issues/14)) ([709d70f](https://github.com/skarab42/htms-js/commit/709d70fd9a672c13bce4acf78f40a4e215783569))
+
+
+### 🧹 Chores
+
+* add `packageManager` and `engines` fields ([#17](https://github.com/skarab42/htms-js/issues/17)) ([268f5c1](https://github.com/skarab42/htms-js/commit/268f5c1d42c59e8edc39e7d3253fb229aa9642fc))
+
 ## [0.2.0](https://github.com/skarab42/htms-js/compare/htms-server@v0.1.0...htms-server@v0.2.0) (2025-09-10)
 
 
