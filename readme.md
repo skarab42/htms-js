@@ -14,12 +14,6 @@ This monorepo hosts the JavaScript implementation of **HTMS**: a proposal to pro
 
 ---
 
-## Try the live demo
-
-- https://htms.skarab42.dev
-
----
-
 ## Packages
 
 This workspace contains multiple packages:
@@ -31,6 +25,40 @@ This workspace contains multiple packages:
 Each package has its own README with installation and usage instructions.
 
 > 🦀 Rustacean? Check out [**htms-rs**](https://github.com/skarab42/htms-rs).
+
+---
+
+## Why try it
+
+- **Instant rendering:** browsers show HTML immediately.
+- **Progressive async:** placeholders stream in as soon as ready.
+- **Scoped modules:** keep tasks organized by context, even with nested `data-htms-module` blocks.
+- **SEO intact:** bots see full HTML.
+- **Tiny runtime:** one Web Component, injected automatically.
+- **Tech-agnostic:** works with Express, Fastify, Hono, workers, or even raw `stdout`.
+
+---
+
+## How it works
+
+1. **Tokenizer:** scans HTML for `data-htms`.
+2. **Resolver:** maps names to async functions.
+3. **Serializer:** streams HTML and emits chunks as tasks finish.
+4. **Client runtime:** swaps placeholders and cleans up markers.
+
+Result: **SEO-friendly streaming HTML** with minimal overhead.
+
+### Try the `curl` optimized demo
+
+```bash
+$ curl -N https://htms.skarab42.dev/curl
+```
+
+[![htms streaming flow animation](https://cdn.skarab42.dev/htms/images/htms-flow-animation.webp 'htms streaming flow animation')](https://htms.skarab42.dev/curl)
+
+### Try the (too much) dashboard demo
+
+[![htms streaming dashboard demo](https://cdn.skarab42.dev/htms/images/htms-dashboard-demo.webp 'htms streaming dashboard demo')](https://htms.skarab42.dev/)
 
 ---
 
