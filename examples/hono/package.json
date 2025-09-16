@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.0",
-    "hono": "^4.9.4",
+    "hono": "^4.9.7",
     "htms-js": "workspace:*"
   },
   "devDependencies": {

@@ -92,10 +92,10 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^1.19.0
-        version: 1.19.1(hono@4.9.6)
+        version: 1.19.1(hono@4.9.7)
       hono:
-        specifier: ^4.9.4
-        version: 4.9.6
+        specifier: ^4.9.7
+        version: 4.9.7
       htms-js:
         specifier: workspace:*
         version: link:../../packages/htms-js
@@ -1353,8 +1353,8 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  hono@4.9.6:
-    resolution: {integrity: sha512-doVjXhSFvYZ7y0dNokjwwSahcrAfdz+/BCLvAMa/vHLzjj8+CFyV5xteThGUsKdkaasgN+gF2mUxao+SGLpUeA==}
+  hono@4.9.7:
+    resolution: {integrity: sha512-t4Te6ERzIaC48W3x4hJmBwgNlLhmiEdEE5ViYb02ffw4ignHNHa5IBtPjmbKstmtKa8X6C35iWwK4HaqvrzG9w==}
     engines: {node: '>=16.9.0'}
 
   html-encoding-sniffer@4.0.0:
@@ -2554,9 +2554,9 @@ snapshots:
       fastq: 1.19.1
       glob: 11.0.3
 
-  '@hono/node-server@1.19.1(hono@4.9.6)':
+  '@hono/node-server@1.19.1(hono@4.9.7)':
     dependencies:
-      hono: 4.9.6
+      hono: 4.9.7
 
   '@humanfs/core@0.19.1': {}
 
@@ -3541,7 +3541,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  hono@4.9.6: {}
+  hono@4.9.7: {}
 
   html-encoding-sniffer@4.0.0:
     dependencies:
