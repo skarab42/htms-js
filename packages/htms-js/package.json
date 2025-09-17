@@ -32,7 +32,8 @@
     "clean": "rimraf ./dist",
     "build:ts": "tsc -p tsconfig.build.json",
     "build:js": "tsc -p ./src/browser/tsconfig.build.json",
-    "build": "pnpm clean && pnpm build:js && pnpm build:ts",
+    "minify": "terser ./dist/browser/api.js -o ./dist/browser/api.min.js --compress --mangle",
+    "build": "pnpm clean && pnpm build:js && pnpm build:ts && pnpm minify",
     "build:check": "tsc -p ./tsconfig.json",
     "build:watch": "pnpm build --watch",
     "test": "vitest run",
@@ -53,5 +54,8 @@
     "async",
     "html",
     "seo"
-  ]
+  ],
+  "devDependencies": {
+    "terser": "^5.44.0"
+  }
 }
