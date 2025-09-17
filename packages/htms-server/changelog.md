@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/skarab42/htms-js/compare/htms-server@v0.4.0...htms-server@v0.5.0) (2025-09-17)
+
+
+### ✨ Features
+
+* add `data-htms-commit` attribute ([#33](https://github.com/skarab42/htms-js/issues/33)) ([af9bed8](https://github.com/skarab42/htms-js/commit/af9bed86bb778d2e4db434a78cb70bfc52c6420c))
+
 ## [0.4.0](https://github.com/skarab42/htms-js/compare/htms-server@v0.3.0...htms-server@v0.4.0) (2025-09-17)
 
 
