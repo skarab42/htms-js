@@ -1,14 +1,14 @@
 import { sleep } from './helpers.js';
 
 export default {
-  async taskA() {
+  async taskA(...parameters) {
     await sleep(10);
 
-    return 'default exported task A completed';
+    return `default exported task A completed: ${JSON.stringify(parameters)}`;
   },
-  async taskB() {
+  async taskB(...parameters) {
     await sleep(20);
 
-    return 'default exported task B completed';
+    return `default exported task B completed: ${JSON.stringify(parameters)}`;
   },
 };

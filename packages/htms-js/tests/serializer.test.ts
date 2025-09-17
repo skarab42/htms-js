@@ -191,12 +191,67 @@ describe('createHtmsSerializer', () => {
       token: {
         "type": "task",
         "name": "badTask",
-        "uuid": "uuid-test-0000-0001-mock"
+        "uuid": "uuid-test-0000-0001-mock",
+        "parameters": []
       }</pre>
       </div>
       </htms-chunk>
       <htms-chunk uuid="uuid-test-0000-0000-mock">good task done: goodTask</htms-chunk>
       "
     `);
+  });
+
+  it('should serialize a simple html file with [data-htms] and [data-htms-params] attribute', async () => {
+    mockRandomUUIDIncrement();
+
+    const html = `<div data-htms="goodTask" data-htms-params="{ life: 42, enabled: true }, 'hello'" />\n`;
+    const input = createStringStream(html);
+    const result: unknown[] = [];
+    const resolver: Resolver = {
+      resolve(info) {
+        return (...parameters) => {
+          result.push(parameters);
+
+          return Promise.resolve(`resolved task: ${info.name} with parameters: ${JSON.stringify(parameters)}`);
+        };
+      },
+    };
+
+    const output = input
+      .pipeThrough(createHtmsTokenizer())
+      .pipeThrough(createHtmsResolver(resolver))
+      .pipeThrough(createHtmsSerializer());
+
+    const outputString = await collectString(output);
+
+    expect(result[0]).toStrictEqual([{ enabled: true, life: 42 }, 'hello']);
+    expect(outputString).toMatchInlineSnapshot(`
+      "<div data-htms="goodTask" data-htms-params="{ life: 42, enabled: true }, 'hello'" data-htms-uuid="uuid-test-0000-0000-mock"/>
+      <htms-chunk uuid="uuid-test-0000-0000-mock">resolved task: goodTask with parameters: [{"life":42,"enabled":true},"hello"]</htms-chunk>
+      "
+    `);
+  });
+
+  it('should throws an error if [data-htms-params] is not a valid JSON value', async () => {
+    mockRandomUUIDIncrement();
+
+    const html = `<div data-htms="badTask" data-htms-params="1 + 1" />\n`;
+    const input = createStringStream(html);
+    const resolver: Resolver = {
+      resolve(info) {
+        return () => {
+          return Promise.resolve(`resolved task: ${info.name}`);
+        };
+      },
+    };
+
+    const output = input
+      .pipeThrough(createHtmsTokenizer())
+      .pipeThrough(createHtmsResolver(resolver))
+      .pipeThrough(createHtmsSerializer());
+
+    await expect(collectString(output)).rejects.toThrowError(
+      "Failed to parse [data-htms-params] at [1:1]: SyntaxError: JSON5: invalid character '+' at 1:4",
+    );
   });
 });
