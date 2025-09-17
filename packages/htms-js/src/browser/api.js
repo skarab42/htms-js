@@ -51,6 +51,7 @@
     switch (mode) {
       case 'content': {
         host.replaceChildren(fragment);
+        host.setAttribute('aria-busy', 'false');
         break;
       }
       case 'append': {

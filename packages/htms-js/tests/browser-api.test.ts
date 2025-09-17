@@ -76,13 +76,15 @@ describe('<htms-chunk> with commit', () => {
     expect(document.body.innerHTML).toMatchInlineSnapshot(`"<span>contents...</span>"`);
   });
 
-  it('should replaces content of the host', async () => {
+  it('should replaces content of the host and have [aria-busy="false"]', async () => {
     const uuid = 'uuid-test-0000-0000-mock';
 
     createHost(uuid, '<h2>title</h2>');
     createChunk(uuid, 'content');
 
-    expect(document.body.innerHTML).toMatchInlineSnapshot(`"<div class="host"><span>contents...</span></div>"`);
+    expect(document.body.innerHTML).toMatchInlineSnapshot(
+      `"<div class="host" aria-busy="false"><span>contents...</span></div>"`,
+    );
   });
 
   it('should appends to the host', async () => {

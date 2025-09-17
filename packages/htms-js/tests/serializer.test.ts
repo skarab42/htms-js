@@ -105,6 +105,7 @@ describe('createHtmsSerializer', () => {
           switch (mode) {
             case 'content': {
               host.replaceChildren(fragment);
+              host.setAttribute('aria-busy', 'false');
               break;
             }
             case 'append': {
@@ -314,5 +315,32 @@ describe('createHtmsSerializer', () => {
     await expect(collectString(output)).rejects.toThrowError(
       "Failed to parse [data-htms-params] at [1:1]: SyntaxError: JSON5: invalid character '+' at 1:4",
     );
+  });
+
+  it('should add aria attributes if [data-htms-commit="content"]', async () => {
+    mockRandomUUIDIncrement();
+
+    const html = `<div data-htms="goodTask" data-htms-commit="content" />\n`;
+    const input = createStringStream(html);
+    const resolver: Resolver = {
+      resolve(info) {
+        return (...parameters) => {
+          return Promise.resolve(`resolved task: ${info.name} with parameters: ${JSON.stringify(parameters)}`);
+        };
+      },
+    };
+
+    const output = input
+      .pipeThrough(createHtmsTokenizer())
+      .pipeThrough(createHtmsResolver(resolver))
+      .pipeThrough(createHtmsSerializer());
+
+    const outputString = await collectString(output);
+
+    expect(outputString).toMatchInlineSnapshot(`
+      "<div data-htms="goodTask" data-htms-commit="content" data-htms-uuid="uuid-test-0000-0000-mock" role="status" aria-busy="true"/>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="content">resolved task: goodTask with parameters: []</htms-chunk>
+      "
+    `);
   });
 });
