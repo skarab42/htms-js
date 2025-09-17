@@ -51,7 +51,7 @@ async function runTask(token: TaskToken, controller: Controller, debug: boolean)
   try {
     const output = await token.task(...token.parameters);
 
-    controller.enqueue(`<htms-chunk uuid="${token.uuid}">${output}</htms-chunk>\n`);
+    controller.enqueue(`<htms-chunk uuid="${token.uuid}" commit="${token.commit}">${output}</htms-chunk>\n`);
   } catch (error_) {
     const title = 'Unhandled Task Error';
     const error = error_ instanceof Error ? error_ : new Error(String(error_));
