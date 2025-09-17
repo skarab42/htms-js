@@ -86,6 +86,54 @@ describe('createHtmsTokenizer', () => {
     });
   });
 
+  it('should tokenize a simple html string with [data-htms] and [data-htms-params] attribute (single value)', async () => {
+    const uuidMock = 'uuid-test-0000-0000-mock';
+    mockRandomUUIDOnce(uuidMock);
+
+    const startTag = `<div data-htms="taskNameTest" data-htms-params="{ life: 42, enabled: true }, 'hello'">`;
+    const html = `${startTag}...</div>`;
+    const input = createStringStream(html);
+
+    const output = input.pipeThrough(createHtmsTokenizer());
+    const tokens = await collect(output);
+
+    expect(tokens).toHaveLength(3);
+    expect(tokens[0]).toMatchObject({
+      html: startTag,
+      tag: { tagName: 'div' },
+      type: 'htmsTag',
+      taskInfo: {
+        uuid: uuidMock,
+        name: 'taskNameTest',
+        parameters: [{ life: 42 }, 'hello'],
+      },
+    });
+  });
+
+  it('should tokenize a simple html string with [data-htms] and [data-htms-params] attribute (array)', async () => {
+    const uuidMock = 'uuid-test-0000-0000-mock';
+    mockRandomUUIDOnce(uuidMock);
+
+    const startTag = `<div data-htms="taskNameTest" data-htms-params="[42, true, 'hello', { life: 42 }]">`;
+    const html = `${startTag}...</div>`;
+    const input = createStringStream(html);
+
+    const output = input.pipeThrough(createHtmsTokenizer());
+    const tokens = await collect(output);
+
+    expect(tokens).toHaveLength(3);
+    expect(tokens[0]).toMatchObject({
+      html: startTag,
+      tag: { tagName: 'div' },
+      type: 'htmsTag',
+      taskInfo: {
+        uuid: uuidMock,
+        name: 'taskNameTest',
+        parameters: [42, true, 'hello', { life: 42 }],
+      },
+    });
+  });
+
   it('should tokenize a simple html string with only [data-htms-module] attribute', async () => {
     const uuidMock = 'uuid-test-0000-0000-mock';
     mockRandomUUIDOnce(uuidMock);

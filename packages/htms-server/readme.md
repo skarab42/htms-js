@@ -84,6 +84,12 @@ export async function loadProfile() {
 }
 ```
 
+Start server
+
+```bash
+htms-server start [options]
+```
+
 When you run the server, `htms-js` will scan the HTML for elements with `data-htms` attributes, then dynamically import the functions from the matching module (`index.js`) to resolve and stream the content.
 
 ---
@@ -108,6 +114,49 @@ HTMS supports scoped modules, meaning tasks can resolve from different modules d
 ```
 
 This makes it easier to compose and reuse modules without conflicts.
+
+## Task parameters (`data-htms-args`)
+
+Pass parameters to tasks via a JSON/JSON5 array stored in the `data-htms-args` attribute.
+
+- Accepts either a **JSON/JSON5 array** (recommended) or a **comma-separated list** without brackets.
+- You can also pass a **single value**; it is treated as the first argument (equivalent to wrapping it in `[...]`).
+- Supports: single or double quotes, unquoted object keys, trailing commas, comments.
+- **Not supported:** `undefined`, functions, arbitrary JS expressions. Use `null` when you need to indicate “no value.”
+
+**HTML examples**
+
+```html
+<!-- JSON/JSON5 array -->
+<div data-htms="renderUserCard" data-htms-args='[12345, "en-GB", { showBadges: true, theme: "compact" }]' />
+
+<!-- Comma-separated list (equivalent to an array) -->
+<div data-htms="renderFeed" data-htms-args="12345, { limit: 10, cursor: null }" />
+
+<!-- Single value (first argument only) -->
+<div data-htms="loadProfile" data-htms-args="12345" />
+```
+
+**Task examples**
+
+```js
+// page-module.js
+export async function renderUserCard(userId, locale, opts) {
+  // userId === 12345
+  // locale === "en-GB"
+  // opts === { showBadges: true, theme: "compact" }
+  return `<div class="user-card">User #${userId}</div>`;
+}
+
+export async function renderFeed(userId, page) {
+  // page === { limit: 10, cursor: null }
+  return `<ul class="feed">...</ul>`;
+}
+
+export async function loadProfile(userId) {
+  return `<div class="profile">Profile of ${userId}</div>`;
+}
+```
 
 ---
 

@@ -36,6 +36,8 @@ $ curl -N https://htms.skarab42.dev/curl
 
 [![htms streaming dashboard demo](https://cdn.skarab42.dev/htms/images/htms-dashboard-demo.webp 'htms streaming dashboard demo')](https://htms.skarab42.dev/)
 
+---
+
 ## 🚀 Quick start
 
 ### 1. Install
@@ -55,7 +57,6 @@ pnpm add htms-js
   <body>
     <h1>News feed</h1>
     <div data-htms="loadNews">Loading news…</div>
-
     <h1>User profile</h1>
     <div data-htms="loadProfile">Loading profile…</div>
   </body>
@@ -106,7 +107,25 @@ When you call `createHtmsFileModulePipeline('./home-page.html')`, HTMS will auto
 
 ---
 
-## Scoped modules
+## Examples
+
+- [Express](https://github.com/skarab42/htms-js/tree/main/examples/express/index.ts), [Fastify](https://github.com/skarab42/htms-js/tree/main/examples/fastify/index.ts), [Hono](https://github.com/skarab42/htms-js/tree/main/examples/hono/index.ts)
+- [Raw streaming](https://github.com/skarab42/htms-js/tree/main/examples/stdout/index.ts) (stdout)
+- [htms server](https://github.com/skarab42/htms-js/tree/main/examples/server) (cli)
+
+```bash
+git clone https://github.com/skarab42/htms-js.git
+cd htms-js
+pnpm i && pnpm build
+```
+
+Run `pnpm --filter (express|fastify|hono|stdout|server)-example start` to try them.
+
+---
+
+## HTMS attributes
+
+### Scoped modules (`data-htms-module`)
 
 HTMS supports scoped modules, meaning tasks can resolve from different modules depending on context. You can nest modules and HTMS will pick the right scope for each placeholder.
 
@@ -127,21 +146,54 @@ HTMS supports scoped modules, meaning tasks can resolve from different modules d
 
 This makes it easier to compose and reuse modules without conflicts.
 
+## Task parameters (`data-htms-args`)
+
+Pass parameters to tasks via a JSON/JSON5 array stored in the `data-htms-args` attribute.
+
+- Accepts either a **JSON/JSON5 array** (recommended) or a **comma-separated list** without brackets.
+- You can also pass a **single value**; it is treated as the first argument (equivalent to wrapping it in `[...]`).
+- Supports: single or double quotes, unquoted object keys, trailing commas, comments.
+- **Not supported:** `undefined`, functions, arbitrary JS expressions. Use `null` when you need to indicate “no value.”
+
+**HTML examples**
+
+```html
+<!-- JSON/JSON5 array -->
+<div data-htms="renderUserCard" data-htms-args='[12345, "en-GB", { showBadges: true, theme: "compact" }]' />
+
+<!-- Comma-separated list (equivalent to an array) -->
+<div data-htms="renderFeed" data-htms-args="12345, { limit: 10, cursor: null }" />
+
+<!-- Single value (first argument only) -->
+<div data-htms="loadProfile" data-htms-args="12345" />
+```
+
+**Task examples**
+
+```js
+// page-module.js
+export async function renderUserCard(userId, locale, opts) {
+  // userId === 12345
+  // locale === "en-GB"
+  // opts === { showBadges: true, theme: "compact" }
+  return `<div class="user-card">User #${userId}</div>`;
+}
+
+export async function renderFeed(userId, page) {
+  // page === { limit: 10, cursor: null }
+  return `<ul class="feed">...</ul>`;
+}
+
+export async function loadProfile(userId) {
+  return `<div class="profile">Profile of ${userId}</div>`;
+}
+```
+
 ---
 
-## Examples
+## Under the hood (advanced)
 
-- [Express](https://github.com/skarab42/htms-js/tree/main/examples/express/index.ts), [Fastify](https://github.com/skarab42/htms-js/tree/main/examples/fastify/index.ts), [Hono](https://github.com/skarab42/htms-js/tree/main/examples/hono/index.ts)
-- [Raw streaming](https://github.com/skarab42/htms-js/tree/main/examples/stdout/index.ts) (stdout)
-- [htms server](https://github.com/skarab42/htms-js/tree/main/examples/server) (cli)
-
-Run `pnpm --filter (express|fastify|hono|stdout|server)-example start` to try them.
-
-_Remember to run `pnpm i && pnpm build` first._
-
----
-
-## Under the hood
+A classic htms pipeline.
 
 ```ts
 import process from 'node:process';
@@ -164,6 +216,26 @@ await createFileStream('./index.html')
 ```
 
 Works anywhere with a `WritableStream`: File, HTTP, network, stdout, ...
+
+### Building blocks
+
+```ts
+// Streams
+createStringStream(input: string | string[]): ReadableStream<string>
+createFileStream(filePath: string): ReadableStream<string>
+
+// Core transforms
+createHtmsTokenizer(): TransformStream<string, Token>
+createHtmsResolver(resolver: Resolver): TransformStream<Token, ResolverToken>
+createHtmsSerializer(): TransformStream<ResolverToken, string>
+createHtmsCompressor(encoding: Encoding): TransformStream<string, string | Buffer>
+
+// Pipelines
+createHtmsStringPipeline(html: string, resolver: Resolver): ReadableStream<string>
+createHtmsFilePipeline(filePath: string, resolver: Resolver): ReadableStream<string>
+createHtmsStringModulePipeline(html: string, moduleSpecifier: string): ReadableStream<string>
+createHtmsFileModulePipeline(filePath: string, opts?: { specifier?: string; extension?: string }): ReadableStream<string>
+```
 
 ---
 
@@ -195,31 +267,6 @@ createHtmsFileModulePipeline(
 - Supports `.ts`, `.mts`, `.cts` if your runtime allows it.
 - Task names = HTML placeholders.
 - Named exports or a default export object are valid.
-
----
-
-## Building blocks
-
-```ts
-// Streams
-createStringStream(input: string | string[]): ReadableStream<string>
-createFileStream(filePath: string): ReadableStream<string>
-
-// Core transforms
-createHtmsTokenizer(): TransformStream<string, Token>
-createHtmsResolver(resolver: Resolver): TransformStream<Token, ResolverToken>
-createHtmsSerializer(): TransformStream<ResolverToken, string>
-createHtmsCompressor(encoding: Encoding): TransformStream<string, string | Buffer>
-
-// Pipelines
-createHtmsStringPipeline(html: string, resolver: Resolver): ReadableStream<string>
-createHtmsFilePipeline(filePath: string, resolver: Resolver): ReadableStream<string>
-createHtmsStringModulePipeline(html: string, moduleSpecifier: string): ReadableStream<string>
-createHtmsFileModulePipeline(filePath: string, opts?: { specifier?: string; extension?: string }): ReadableStream<string>
-
-// Resolver class
-class ModuleResolver { constructor(specifier: string) }
-```
 
 ---
 
