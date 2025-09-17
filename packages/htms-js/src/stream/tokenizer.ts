@@ -29,9 +29,31 @@ export interface RawHtmlToken extends Omit<BaseToken, 'tag'> {
   type: 'rawHtml';
 }
 
+const commits = ['replace', 'content', 'append', 'prepend', 'before', 'after'] as const;
+
+export type CommitMode = typeof commits;
+export type Commit = CommitMode[number];
+
+function isCommit(commit: string): commit is Commit {
+  return commits.includes(commit as Commit);
+}
+
+function parseCommit(commit: string | undefined): Commit {
+  if (!commit) {
+    return 'replace';
+  }
+
+  if (!isCommit(commit)) {
+    throw new TypeError(`Unexpected commit mode '${commit}', expected one of '${commits.join('|')}'`);
+  }
+
+  return commit;
+}
+
 export interface TaskInfo {
   name: string;
   uuid: string;
+  commit: Commit;
   parameters: unknown[];
 }
 
@@ -84,13 +106,16 @@ export function createHtmsTokenizer(): TokenizerStream {
 
         const dataHtms = attributes.get('data-htms');
         const htmsModule = attributes.get('data-htms-module');
-        const htmsParameters = attributes.get('data-htms-params');
 
         if (dataHtms) {
           try {
+            const htmsCommit = attributes.get('data-htms-commit');
+            const htmsParameters = attributes.get('data-htms-params');
+
             const taskInfo: TaskInfo = {
               name: dataHtms,
               uuid: randomUUID(),
+              commit: parseCommit(htmsCommit),
               parameters: parseParameters(htmsParameters),
             };
 

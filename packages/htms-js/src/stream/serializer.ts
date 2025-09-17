@@ -22,8 +22,12 @@ function formatStartTag(token: StartTag): string {
 
 type Controller = TransformStreamDefaultController<string>;
 
+function setAttribute(token: StartToken, name: string, value: string): void {
+  token.tag.attrs.push({ name, value });
+}
+
 function setHtmsAttribute(token: StartToken, name: string, value: string): void {
-  token.tag.attrs.push({ name: `data-htms-${name}`, value });
+  setAttribute(token, `data-htms-${name}`, value);
 }
 
 function removeHtmsAttribute(token: StartToken, name: string): void {
@@ -51,7 +55,7 @@ async function runTask(token: TaskToken, controller: Controller, debug: boolean)
   try {
     const output = await token.task(...token.parameters);
 
-    controller.enqueue(`<htms-chunk uuid="${token.uuid}">${output}</htms-chunk>\n`);
+    controller.enqueue(`<htms-chunk uuid="${token.uuid}" commit="${token.commit}">${output}</htms-chunk>\n`);
   } catch (error_) {
     const title = 'Unhandled Task Error';
     const error = error_ instanceof Error ? error_ : new Error(String(error_));
@@ -114,6 +118,12 @@ export function createHtmsSerializer(options?: HtmsSerializerOptions | undefined
         case 'htmsTag': {
           removeHtmsAttribute(token, 'module');
           setHtmsAttribute(token, 'uuid', token.taskInfo.uuid);
+
+          if (token.taskInfo.commit === 'content') {
+            setAttribute(token, 'role', 'status');
+            setAttribute(token, 'aria-busy', 'true');
+          }
+
           controller.enqueue(formatStartTag(token.tag));
           break;
         }

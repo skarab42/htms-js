@@ -158,6 +158,77 @@ export async function loadProfile(userId) {
 }
 ```
 
+## Commit behavior (`data-htms-commit`)
+
+Controls how the streamed result is applied to the placeholder. Default: `replace`.
+
+| Value     | Effect                                              | DOM equivalent               |
+| --------- | --------------------------------------------------- | ---------------------------- |
+| `replace` | Replace the **placeholder node** (outer)            | `host.replaceWith(frag)`     |
+| `content` | Replace the **children** of the placeholder (inner) | `host.replaceChildren(frag)` |
+| `append`  | Append result **as last child**                     | `host.append(frag)`          |
+| `prepend` | Insert result **as first child**                    | `host.prepend(frag)`         |
+| `before`  | Insert result **before** the placeholder            | `host.before(frag)`          |
+| `after`   | Insert result **after** the placeholder             | `host.after(frag)`           |
+
+**HTML examples**
+
+Assuming the streamed content is: `<div>Streamed</div>`
+
+```html
+<!-- replace (default): host node is replaced by the content -->
+<div data-htms="getUser" data-htms-commit="replace">Loading…</div>
+<!-- becomes -->
+<div>Streamed</div>
+
+<!-- content: keep the host, swap its children -->
+<div data-htms="getUser" data-htms-commit="content">Loading…</div>
+<!-- becomes -->
+<div><div>Streamed</div></div>
+
+<!-- append: add at the end of host -->
+<section data-htms="getUser" data-htms-commit="append"><div>Existing</div></section>
+<!-- becomes -->
+<section>
+  <div>Existing</div>
+  <div>Streamed</div>
+</section>
+
+<!-- prepend: add at the beginning of host -->
+<section data-htms="getUser" data-htms-commit="prepend"><div>Existing</div></section>
+<!-- becomes -->
+<section>
+  <div>Streamed</div>
+  <div>Existing</div>
+</section>
+
+<!-- before: insert before the host -->
+<hr data-htms="getUser" data-htms-commit="before" />
+<!-- becomes -->
+<div>Streamed</div>
+<hr />
+
+<!-- after: insert after the host -->
+<hr data-htms="getUser" data-htms-commit="after" />
+<!-- becomes -->
+<hr />
+<div>Streamed</div>
+```
+
+**Notes**
+
+- With `append`, `prepend`, `before`, `after`, the placeholder stays in the DOM. Remove or restyle it if needed once the chunk is committed.
+- With `content`, you keep the container (useful for accessibility/live regions).
+
+### Accessibility (content mode)
+
+When `data-htms-commit="content"` is used, HTMS automatically marks the placeholder as a **polite live region** while it is pending:
+
+- Adds `role="status"` and `aria-busy="true"` on the host before the first update.
+- On commit, flips `aria-busy` to `false` so screen readers announce the final content once.
+
+This gives you accessible announcements out of the box, without extra markup. If you need a different behavior, switch to another commit mode or set your own ARIA attributes on the host.
+
 ---
 
 ## Usage

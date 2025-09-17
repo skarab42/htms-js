@@ -5,6 +5,24 @@ import '../src/browser/api.js';
 
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { Commit } from '../src/index.js';
+
+function createHost(uuid: string, html = ''): void {
+  const host = document.createElement('div');
+  host.classList.add('host');
+  host.dataset['htmsUuid'] = uuid;
+  host.innerHTML = html;
+  document.body.append(host);
+}
+
+function createChunk(uuid: string, commit: Commit): void {
+  const chunk = document.createElement('htms-chunk');
+  chunk.setAttribute('commit', commit);
+  chunk.setAttribute('uuid', uuid);
+  chunk.innerHTML = '<span>contents...</span>';
+  document.body.append(chunk);
+}
+
 beforeAll(() => {
   vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => callback(0));
 });
@@ -37,20 +55,80 @@ describe('<htms-chunk>', () => {
   });
 
   it('replace the target element with the content of the <htms-chunk> component', async () => {
-    const uuidMock = 'uuid-test-0000-0000-mock';
+    const uuid = 'uuid-test-0000-0000-mock';
 
-    const target = document.createElement('div');
-    target.dataset['htmsUuid'] = uuidMock;
-    document.body.append(target);
+    createHost(uuid);
+    createChunk(uuid, 'replace');
 
-    const chunk = document.createElement('htms-chunk');
-    chunk.setAttribute('uuid', uuidMock);
-    chunk.innerHTML = '<span>Some contents...</span>';
-    document.body.append(chunk);
-
-    expect(document.querySelector(`[data-htms-uuid="${uuidMock}"]`)).toBeNull();
-    expect(document.body.innerHTML).toContain('<span>Some contents...</span>');
+    expect(document.querySelector(`[data-htms-uuid="${uuid}"]`)).toBeNull();
+    expect(document.body.innerHTML).toContain('<span>contents...</span>');
     expect(document.querySelector('htms-chunk')).toBeNull();
+  });
+});
+
+describe('<htms-chunk> with commit', () => {
+  it('should replaces the host node', async () => {
+    const uuid = 'uuid-test-0000-0000-mock';
+
+    createHost(uuid);
+    createChunk(uuid, 'replace');
+
+    expect(document.body.innerHTML).toMatchInlineSnapshot(`"<span>contents...</span>"`);
+  });
+
+  it('should replaces content of the host and have [aria-busy="false"]', async () => {
+    const uuid = 'uuid-test-0000-0000-mock';
+
+    createHost(uuid, '<h2>title</h2>');
+    createChunk(uuid, 'content');
+
+    expect(document.body.innerHTML).toMatchInlineSnapshot(
+      `"<div class="host" aria-busy="false"><span>contents...</span></div>"`,
+    );
+  });
+
+  it('should appends to the host', async () => {
+    const uuid = 'uuid-test-0000-0000-mock';
+
+    createHost(uuid, '<h2>title</h2>');
+    createChunk(uuid, 'append');
+
+    expect(document.body.innerHTML).toMatchInlineSnapshot(
+      `"<div class="host"><h2>title</h2><span>contents...</span></div>"`,
+    );
+  });
+
+  it('should prepends to the host', async () => {
+    const uuid = 'uuid-test-0000-0000-mock';
+
+    createHost(uuid, '<h2>title</h2>');
+    createChunk(uuid, 'prepend');
+
+    expect(document.body.innerHTML).toMatchInlineSnapshot(
+      `"<div class="host"><span>contents...</span><h2>title</h2></div>"`,
+    );
+  });
+
+  it('should inserts before the host', async () => {
+    const uuid = 'uuid-test-0000-0000-mock';
+
+    createHost(uuid, '<h2>title</h2>');
+    createChunk(uuid, 'before');
+
+    expect(document.body.innerHTML).toMatchInlineSnapshot(
+      `"<span>contents...</span><div class="host"><h2>title</h2></div>"`,
+    );
+  });
+
+  it('should inserts after the host', async () => {
+    const uuid = 'uuid-test-0000-0000-mock';
+
+    createHost(uuid, '<h2>title</h2>');
+    createChunk(uuid, 'after');
+
+    expect(document.body.innerHTML).toMatchInlineSnapshot(
+      `"<div class="host"><h2>title</h2></div><span>contents...</span>"`,
+    );
   });
 });
 

@@ -59,6 +59,7 @@ describe('createHtmsSerializer', () => {
           class HTMLChunk extends HTMLElement {
             connectedCallback() {
               const uuid = this.getAttribute('uuid');
+              const commitMode = this.getAttribute('commit');
 
               if (!uuid) {
                 console.warn("[htms-chunk] missing 'uuid' attribute:", this);
@@ -66,20 +67,80 @@ describe('createHtmsSerializer', () => {
               }
 
               const selector = \`[data-htms-uuid="\${uuid}"]\`;
-              const targetElement = document.querySelector(selector);
+              const host = document.querySelector(selector);
 
-              if (!targetElement) {
+              if (!host) {
                 console.warn(\`[htms-chunk] target element not found with selector '\${selector}'\`);
                 return;
               }
 
               requestAnimationFrame(() => {
-                targetElement.outerHTML = this.innerHTML;
+                commit(host, this.innerHTML, commitMode);
+                removeHtmsAttributes(host);
                 this.remove();
               });
             }
           },
         );
+
+        /**
+         * @param {string} html
+         */
+        function toFragment(html) {
+          const template = document.createElement('template');
+
+          template.innerHTML = html;
+
+          return template.content;
+        }
+
+        /**
+         * @param {Element} host
+         * @param {string} html
+         * @param {string|null} mode
+         */
+        function commit(host, html, mode) {
+          const fragment = toFragment(html);
+
+          switch (mode) {
+            case 'content': {
+              host.replaceChildren(fragment);
+              host.setAttribute('aria-busy', 'false');
+              break;
+            }
+            case 'append': {
+              host.append(fragment);
+              break;
+            }
+            case 'prepend': {
+              host.prepend(fragment);
+              break;
+            }
+            case 'before': {
+              host.before(fragment);
+              break;
+            }
+            case 'after': {
+              host.after(fragment);
+              break;
+            }
+            default: {
+              host.replaceWith(fragment);
+              break;
+            }
+          }
+        }
+
+        /**
+         * @param {Element} host
+         */
+        function removeHtmsAttributes(host) {
+          for (const attribute of host.attributes) {
+            if (attribute.name.startsWith('data-htms')) {
+              host.removeAttribute(attribute.name);
+            }
+          }
+        }
 
         function cleanup() {
           for (const element of document.querySelectorAll('[data-htms-remove-on-cleanup]')) {
@@ -94,8 +155,8 @@ describe('createHtmsSerializer', () => {
         });
       })();
       </script>
-      <htms-chunk uuid="uuid-test-0000-0000-mock">resolved task: getNews</htms-chunk>
-      <htms-chunk uuid="uuid-test-0000-0001-mock">resolved task: getArticles</htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">resolved task: getNews</htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0001-mock" commit="replace">resolved task: getArticles</htms-chunk>
       <script data-htms-remove-on-cleanup>htms.cleanup()</script>
       </body>
       </html>"
@@ -144,7 +205,7 @@ describe('createHtmsSerializer', () => {
       <p>Please contact the site administrator if the issue persists.</p>
       </div>
       </htms-chunk>
-      <htms-chunk uuid="uuid-test-0000-0000-mock">good task done: goodTask</htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">good task done: goodTask</htms-chunk>
       "
     `);
   });
@@ -192,11 +253,12 @@ describe('createHtmsSerializer', () => {
         "type": "task",
         "name": "badTask",
         "uuid": "uuid-test-0000-0001-mock",
+        "commit": "replace",
         "parameters": []
       }</pre>
       </div>
       </htms-chunk>
-      <htms-chunk uuid="uuid-test-0000-0000-mock">good task done: goodTask</htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">good task done: goodTask</htms-chunk>
       "
     `);
   });
@@ -227,7 +289,7 @@ describe('createHtmsSerializer', () => {
     expect(result[0]).toStrictEqual([{ enabled: true, life: 42 }, 'hello']);
     expect(outputString).toMatchInlineSnapshot(`
       "<div data-htms="goodTask" data-htms-params="{ life: 42, enabled: true }, 'hello'" data-htms-uuid="uuid-test-0000-0000-mock"/>
-      <htms-chunk uuid="uuid-test-0000-0000-mock">resolved task: goodTask with parameters: [{"life":42,"enabled":true},"hello"]</htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">resolved task: goodTask with parameters: [{"life":42,"enabled":true},"hello"]</htms-chunk>
       "
     `);
   });
@@ -253,5 +315,32 @@ describe('createHtmsSerializer', () => {
     await expect(collectString(output)).rejects.toThrowError(
       "Failed to parse [data-htms-params] at [1:1]: SyntaxError: JSON5: invalid character '+' at 1:4",
     );
+  });
+
+  it('should add aria attributes if [data-htms-commit="content"]', async () => {
+    mockRandomUUIDIncrement();
+
+    const html = `<div data-htms="goodTask" data-htms-commit="content" />\n`;
+    const input = createStringStream(html);
+    const resolver: Resolver = {
+      resolve(info) {
+        return (...parameters) => {
+          return Promise.resolve(`resolved task: ${info.name} with parameters: ${JSON.stringify(parameters)}`);
+        };
+      },
+    };
+
+    const output = input
+      .pipeThrough(createHtmsTokenizer())
+      .pipeThrough(createHtmsResolver(resolver))
+      .pipeThrough(createHtmsSerializer());
+
+    const outputString = await collectString(output);
+
+    expect(outputString).toMatchInlineSnapshot(`
+      "<div data-htms="goodTask" data-htms-commit="content" data-htms-uuid="uuid-test-0000-0000-mock" role="status" aria-busy="true"/>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="content">resolved task: goodTask with parameters: []</htms-chunk>
+      "
+    `);
   });
 });
