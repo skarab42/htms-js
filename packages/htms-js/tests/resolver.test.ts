@@ -39,6 +39,7 @@ describe('createHtmsResolver', () => {
       name: 'getNews',
       uuid: 'uuid-test-0000-0000-mock',
       task: expect.any(Function),
+      commit: 'replace',
       parameters: [],
     });
     expect(articlesTaskToken).toStrictEqual({
@@ -46,6 +47,7 @@ describe('createHtmsResolver', () => {
       name: 'getArticles',
       uuid: 'uuid-test-0000-0001-mock',
       task: expect.any(Function),
+      commit: 'replace',
       parameters: [],
     });
     await expect(newsTaskToken.task()).resolves.toBe('task done: getNews');
