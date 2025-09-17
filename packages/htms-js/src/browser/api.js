@@ -43,7 +43,7 @@
   /**
    * @param {Element} host
    * @param {string} html
-   * @param {unknown} mode
+   * @param {string|null} mode
    */
   function commit(host, html, mode) {
     const fragment = toFragment(html);
