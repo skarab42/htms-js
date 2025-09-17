@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { TransformStream } from 'node:stream/web';
 
+import JSON5 from 'json5';
 import { RewritingStream } from 'parse5-html-rewriting-stream';
 
 export type StartTag = Parameters<RewritingStream['emitStartTag']>[0];
@@ -31,6 +32,7 @@ export interface RawHtmlToken extends Omit<BaseToken, 'tag'> {
 export interface TaskInfo {
   name: string;
   uuid: string;
+  parameters: unknown[];
 }
 
 export interface HtmsTagToken extends BaseToken {
@@ -82,11 +84,21 @@ export function createHtmsTokenizer(): TokenizerStream {
 
         const dataHtms = attributes.get('data-htms');
         const htmsModule = attributes.get('data-htms-module');
+        const htmsParameters = attributes.get('data-htms-params');
 
         if (dataHtms) {
-          const taskInfo: TaskInfo = { name: dataHtms, uuid: randomUUID() };
+          try {
+            const taskInfo: TaskInfo = {
+              name: dataHtms,
+              uuid: randomUUID(),
+              parameters: parseParameters(htmsParameters),
+            };
 
-          pushStartToken({ type: 'htmsTag', tag, html, taskInfo, specifier: htmsModule ?? scopes.at(-1) });
+            pushStartToken({ type: 'htmsTag', tag, html, taskInfo, specifier: htmsModule ?? scopes.at(-1) });
+          } catch (error) {
+            controller.error(`Failed to parse [data-htms-params] at ${formatCodeLocation(tag)}: ${error}`);
+          }
+
           return;
         }
 
@@ -153,4 +165,16 @@ function formatCodeLocation(tag: StartTag | EndTag): string {
   const { startLine = 0, startCol = 0 } = tag.sourceCodeLocation ?? {};
 
   return `[${startLine}:${startCol}]`;
+}
+
+function parseParameters(input: string | undefined): unknown[] {
+  const trimmedInput = input?.trim();
+
+  if (!trimmedInput || trimmedInput === '') {
+    return [];
+  }
+
+  const wrappedInput = trimmedInput.startsWith('[') ? trimmedInput : `[${trimmedInput}]`;
+
+  return JSON5.parse(wrappedInput);
 }

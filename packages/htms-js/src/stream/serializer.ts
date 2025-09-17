@@ -49,7 +49,7 @@ function processEndTag(token: EndToken, controller: Controller): void {
 
 async function runTask(token: TaskToken, controller: Controller, debug: boolean): Promise<void> {
   try {
-    const output = await token.task();
+    const output = await token.task(...token.parameters);
 
     controller.enqueue(`<htms-chunk uuid="${token.uuid}">${output}</htms-chunk>\n`);
   } catch (error_) {

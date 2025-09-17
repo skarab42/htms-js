@@ -11,7 +11,7 @@
     "format:write": "pnpm format --write",
     "format:check": "pnpm format --check",
     "test": "pnpm -r test",
-    "test:watch": "pnpm -r test:watch",
+    "test:watch": "pnpm vitest",
     "coverage": "pnpm -r coverage",
     "build": "pnpm -r build",
     "build:check": "pnpm -r build:check",
