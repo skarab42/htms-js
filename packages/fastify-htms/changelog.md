@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/skarab42/htms-js/compare/fastify-htms@v0.3.0...fastify-htms@v0.4.0) (2025-09-17)
+
+
+### ✨ Features
+
+* task parameters `[data-htms-params]` ([#27](https://github.com/skarab42/htms-js/issues/27)) ([75f6e80](https://github.com/skarab42/htms-js/commit/75f6e803a36f19fe2eb22aeb4e881b1aadd2e4da))
+
+
+### 🧹 Chores
+
+* update dependencies ([#29](https://github.com/skarab42/htms-js/issues/29)) ([a1e8c16](https://github.com/skarab42/htms-js/commit/a1e8c16074050ee7ebb9d6f8ae4d0e58209a3d9a))
+
 ## [0.3.0](https://github.com/skarab42/htms-js/compare/fastify-htms@v0.2.0...fastify-htms@v0.3.0) (2025-09-16)
 
 
