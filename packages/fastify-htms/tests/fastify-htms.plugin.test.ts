@@ -31,8 +31,12 @@ describe('fastifyHtms (environment = development)', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.headers['content-type']).toContain('text/html');
-    expect(response.body).toContain('<htms-chunk uuid="uuid-test-0000-0000-mock">task A completed</htms-chunk>');
-    expect(response.body).toContain('<htms-chunk uuid="uuid-test-0000-0001-mock">task B completed</htms-chunk>');
+    expect(response.body).toContain(
+      '<htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">task A completed</htms-chunk>',
+    );
+    expect(response.body).toContain(
+      '<htms-chunk uuid="uuid-test-0000-0001-mock" commit="replace">task B completed</htms-chunk>',
+    );
     expect(response.body).toContain('<script data-htms-remove-on-cleanup>htms.cleanup()</script>');
   });
 
