@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.0](https://github.com/skarab42/htms-js/compare/htms-js@v0.4.0...htms-js@v0.5.0) (2025-09-17)
+
+
+### ✨ Features
+
+* add `data-htms-commit` attribute ([#33](https://github.com/skarab42/htms-js/issues/33)) ([af9bed8](https://github.com/skarab42/htms-js/commit/af9bed86bb778d2e4db434a78cb70bfc52c6420c))
+* serve minified api + cache ([#35](https://github.com/skarab42/htms-js/issues/35)) ([a9d502d](https://github.com/skarab42/htms-js/commit/a9d502d96b1fa3e36e66220198c1bd288e80139a))
+
+
+### 🐛 Bug Fixes
+
+* test typing ([0e60dbc](https://github.com/skarab42/htms-js/commit/0e60dbce8e262c9b833f38c9729036ebeedd3def))
+
 ## [0.4.0](https://github.com/skarab42/htms-js/compare/htms-js@v0.3.0...htms-js@v0.4.0) (2025-09-17)
 
 
