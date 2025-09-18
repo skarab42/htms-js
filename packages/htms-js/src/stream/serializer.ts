@@ -35,17 +35,13 @@ function removeHtmsAttribute(token: StartToken, name: string): void {
 }
 
 function processEndTag(token: EndToken, controller: Controller): void {
-  if (token.tag.tagName === 'html') {
-    return; // skip html end tag
-  }
-
-  if (token.tag.tagName === 'body') {
-    controller.enqueue(`<script data-htms-remove-on-cleanup>${browserApiSource}</script>\n`);
-    return; // skip body end tag
+  if (token.tag.tagName === 'html' || token.tag.tagName === 'body') {
+    return; // skip html/body end tag
   }
 
   if (token.tag.tagName === 'head') {
     controller.enqueue('<style data-htms-remove-on-cleanup>[data-htms]:empty{display:none}</style>\n');
+    controller.enqueue(`<script data-htms-remove-on-cleanup>${browserApiSource}</script>\n`);
   }
 
   controller.enqueue(token.html);
@@ -99,7 +95,7 @@ export interface HtmsSerializerOptions {
 export function createHtmsSerializer(options?: HtmsSerializerOptions | undefined): SerializerStream {
   const { debug = false } = options ?? {};
   const seenEndTags = new Set<string>();
-  const taskTokens: TaskToken[] = [];
+  const runningTasks: Promise<void>[] = [];
 
   let cleanNextToken = false;
 
@@ -133,7 +129,7 @@ export function createHtmsSerializer(options?: HtmsSerializerOptions | undefined
           break;
         }
         case 'task': {
-          taskTokens.push(token);
+          runningTasks.push(runTask(token, controller, debug));
           break;
         }
         default: {
@@ -149,10 +145,10 @@ export function createHtmsSerializer(options?: HtmsSerializerOptions | undefined
       }
     },
     async flush(controller) {
-      const taskFound = taskTokens.length > 0;
+      const taskFound = runningTasks.length > 0;
 
       if (taskFound) {
-        await Promise.allSettled(taskTokens.map((token) => runTask(token, controller, debug)));
+        await Promise.allSettled(runningTasks);
       }
 
       try {
