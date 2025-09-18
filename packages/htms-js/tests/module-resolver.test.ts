@@ -12,7 +12,7 @@ describe('ModuleResolver', () => {
   it('should rejects task when the function is missing', async () => {
     const file = path.resolve(fixturesDirectory, 'empty.ts');
     const resolver = new ModuleResolver(file);
-    const info: TaskInfo = { name: 'notThere', uuid: uuidMock, parameters: [], commit: 'replace' };
+    const info: TaskInfo = { name: 'notThere', uuid: uuidMock, value: [], commit: 'replace' };
 
     const task = await resolver.resolve(info);
 
@@ -22,7 +22,7 @@ describe('ModuleResolver', () => {
   it('should resolves a named exported function', async () => {
     const file = path.resolve(fixturesDirectory, 'export-named.js');
     const resolver = new ModuleResolver(file);
-    const info: TaskInfo = { name: 'taskA', uuid: uuidMock, parameters: [], commit: 'replace' };
+    const info: TaskInfo = { name: 'taskA', uuid: uuidMock, value: [], commit: 'replace' };
 
     const task = await resolver.resolve(info);
 
@@ -32,7 +32,7 @@ describe('ModuleResolver', () => {
   it('should resolves an default exported function', async () => {
     const file = path.resolve(fixturesDirectory, 'export-default.js');
     const resolver = new ModuleResolver(file);
-    const info: TaskInfo = { name: 'taskB', uuid: uuidMock, parameters: [], commit: 'replace' };
+    const info: TaskInfo = { name: 'taskB', uuid: uuidMock, value: [], commit: 'replace' };
 
     const task = await resolver.resolve(info);
 
@@ -43,7 +43,7 @@ describe('ModuleResolver', () => {
     const file = path.resolve(fixturesDirectory, 'export-default.js');
     const resolver = new ModuleResolver(file);
     const parameters = [{ life: 42 }, 'hello'];
-    const info: TaskInfo = { name: 'taskB', uuid: uuidMock, parameters, commit: 'replace' };
+    const info: TaskInfo = { name: 'taskB', uuid: uuidMock, value: parameters, commit: 'replace' };
 
     const task = await resolver.resolve(info);
 
