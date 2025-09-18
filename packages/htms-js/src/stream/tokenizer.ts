@@ -54,7 +54,7 @@ export interface TaskInfo {
   name: string;
   uuid: string;
   commit: Commit;
-  parameters: unknown[];
+  value: unknown;
 }
 
 export interface HtmsTagToken extends BaseToken {
@@ -110,18 +110,18 @@ export function createHtmsTokenizer(): TokenizerStream {
         if (dataHtms) {
           try {
             const htmsCommit = attributes.get('data-htms-commit');
-            const htmsParameters = attributes.get('data-htms-params');
+            const htmsValue = attributes.get('data-htms-value');
 
             const taskInfo: TaskInfo = {
               name: dataHtms,
               uuid: randomUUID(),
               commit: parseCommit(htmsCommit),
-              parameters: parseParameters(htmsParameters),
+              value: parseValue(htmsValue),
             };
 
             pushStartToken({ type: 'htmsTag', tag, html, taskInfo, specifier: htmsModule ?? scopes.at(-1) });
           } catch (error) {
-            controller.error(`Failed to parse [data-htms-params] at ${formatCodeLocation(tag)}: ${error}`);
+            controller.error(`Failed to parse [data-htms-value] at ${formatCodeLocation(tag)}: ${error}`);
           }
 
           return;
@@ -192,14 +192,12 @@ function formatCodeLocation(tag: StartTag | EndTag): string {
   return `[${startLine}:${startCol}]`;
 }
 
-function parseParameters(input: string | undefined): unknown[] {
+function parseValue(input: string | undefined): unknown {
   const trimmedInput = input?.trim();
 
-  if (!trimmedInput || trimmedInput === '') {
-    return [];
+  if (!trimmedInput || trimmedInput === '' || trimmedInput === 'undefined') {
+    return undefined;
   }
 
-  const wrappedInput = trimmedInput.startsWith('[') ? trimmedInput : `[${trimmedInput}]`;
-
-  return JSON5.parse(wrappedInput);
+  return JSON5.parse(trimmedInput);
 }

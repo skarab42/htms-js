@@ -146,48 +146,60 @@ HTMS supports scoped modules, meaning tasks can resolve from different modules d
 
 This makes it easier to compose and reuse modules without conflicts.
 
-## Task parameters (`data-htms-args`)
+## Task value (`data-htms-value`)
 
-Pass parameters to tasks via a JSON/JSON5 array stored in the `data-htms-args` attribute.
+`data-htms-value` passes **one argument** to the task.
+When present, the value is parsed as **JSON5** and given to the task as its **first parameter**.
+If the attribute is **omitted**, the task receives `undefined`.
 
-- Accepts either a **JSON/JSON5 array** (recommended) or a **comma-separated list** without brackets.
-- You can also pass a **single value**; it is treated as the first argument (equivalent to wrapping it in `[...]`).
-- Supports: single or double quotes, unquoted object keys, trailing commas, comments.
-- **Not supported:** `undefined`, functions, arbitrary JS expressions. Use `null` when you need to indicate “no value.”
+- Accepted: `undefined`, `null`, booleans, numbers, strings, arrays, objects (JSON5: single quotes, unquoted keys, comments, trailing commas).
+- Not accepted: functions, arbitrary JS expressions.
+- Need multiple pieces of data? Pack them into **one** object or array.
 
-**HTML examples**
+### HTML examples
 
 ```html
-<!-- JSON/JSON5 array -->
-<div data-htms="renderUserCard" data-htms-args='[12345, "en-GB", { showBadges: true, theme: "compact" }]' />
+<!-- attribute omitted → value = undefined -->
+<div data-htms="loadDefaults"></div>
 
-<!-- Comma-separated list (equivalent to an array) -->
-<div data-htms="renderFeed" data-htms-args="12345, { limit: 10, cursor: null }" />
+<!-- primitive values -->
+<div data-htms="loadDefaults" data-htms-value="null"></div>
+<div data-htms="loadProfile" data-htms-value="true"></div>
+<div data-htms="loadUser" data-htms-value="12345"></div>
+<div data-htms="loadByName" data-htms-value="'john-doe'"></div>
 
-<!-- Single value (first argument only) -->
-<div data-htms="loadProfile" data-htms-args="12345" />
+<!-- object / array (JSON5) -->
+<div data-htms="loadFeed" data-htms-value="{ theme: 'compact', limit: 10 }"></div>
+<div data-htms="renderOffer" data-htms-value="[42, { theme: 'compact' }]"></div>
 ```
 
-**Task examples**
+### Task signatures (TypeScript examples)
 
-```js
-// page-module.js
-export async function renderUserCard(userId, locale, opts) {
-  // userId === 12345
-  // locale === "en-GB"
-  // opts === { showBadges: true, theme: "compact" }
-  return `<div class="user-card">User #${userId}</div>`;
+```ts
+export async function loadDefaults(value: undefined | null) {}
+export async function loadProfile(value: boolean) {}
+export async function loadUser(value: number) {}
+export async function loadByName(value: string) {}
+
+export async function loadFeed(value: { theme: string; limit: number }) {
+  // value.theme === 'compact'
+  // value.limit === 10
 }
 
-export async function renderFeed(userId, page) {
-  // page === { limit: 10, cursor: null }
-  return `<ul class="feed">...</ul>`;
-}
-
-export async function loadProfile(userId) {
-  return `<div class="profile">Profile of ${userId}</div>`;
+export async function renderOffer(value: [number, { theme: string }]) {
+  const [offerId, options] = value;
+  // offerId === 42
+  // options.theme === 'compact'
 }
 ```
+
+### Tips
+
+- **Keep it serializable.** Only data you could express in JSON5 should go here.
+- **Prefer objects** when the meaning of fields matters: `{ id, page, sort }` is clearer than `[id, page, sort]`.
+- **Strings must be quoted.** Use JSON5 single quotes in HTML to stay readable.
+- **Validate inside the task.** Treat the value as untrusted input.
+- **One argument by design.** If you need several inputs, bundle them: `(value)` where `value` is an object/array.
 
 ## Commit behavior (`data-htms-commit`)
 
