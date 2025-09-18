@@ -86,11 +86,11 @@ describe('createHtmsTokenizer', () => {
     });
   });
 
-  it('should tokenize a simple html string with [data-htms] and [data-htms-params] attribute (single value)', async () => {
+  it('should tokenize a simple html string with [data-htms] and [data-htms-value] attribute (single value)', async () => {
     const uuidMock = 'uuid-test-0000-0000-mock';
     mockRandomUUIDOnce(uuidMock);
 
-    const startTag = `<div data-htms="taskNameTest" data-htms-params="{ life: 42, enabled: true }, 'hello'">`;
+    const startTag = `<div data-htms="taskNameTest" data-htms-value="{ life: 42, enabled: true }">`;
     const html = `${startTag}...</div>`;
     const input = createStringStream(html);
 
@@ -105,16 +105,16 @@ describe('createHtmsTokenizer', () => {
       taskInfo: {
         uuid: uuidMock,
         name: 'taskNameTest',
-        parameters: [{ life: 42 }, 'hello'],
+        value: { life: 42, enabled: true },
       },
     });
   });
 
-  it('should tokenize a simple html string with [data-htms] and [data-htms-params] attribute (array)', async () => {
+  it('should tokenize a simple html string with [data-htms] and [data-htms-value] attribute (array)', async () => {
     const uuidMock = 'uuid-test-0000-0000-mock';
     mockRandomUUIDOnce(uuidMock);
 
-    const startTag = `<div data-htms="taskNameTest" data-htms-params="[42, true, 'hello', { life: 42 }]">`;
+    const startTag = `<div data-htms="taskNameTest" data-htms-value="[42, true, 'hello', { life: 42 }]">`;
     const html = `${startTag}...</div>`;
     const input = createStringStream(html);
 
@@ -129,7 +129,7 @@ describe('createHtmsTokenizer', () => {
       taskInfo: {
         uuid: uuidMock,
         name: 'taskNameTest',
-        parameters: [42, true, 'hello', { life: 42 }],
+        value: [42, true, 'hello', { life: 42 }],
       },
     });
   });

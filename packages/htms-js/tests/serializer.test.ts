@@ -216,6 +216,7 @@ describe('createHtmsSerializer', () => {
 
     const html = '<div data-htms="goodTask"/>\n<div data-htms="badTask"/>\n';
     const input = createStringStream(html);
+
     const resolver: Resolver = {
       resolve(info) {
         return () => {
@@ -242,6 +243,7 @@ describe('createHtmsSerializer', () => {
       }),
     );
 
+    // NOTE: token.value is stripped by JSON.stringify()
     expect(outputString).toMatchInlineSnapshot(`
       "<div data-htms="goodTask" data-htms-uuid="uuid-test-0000-0000-mock"/>
       <div data-htms="badTask" data-htms-uuid="uuid-test-0000-0001-mock"/>
@@ -254,8 +256,7 @@ describe('createHtmsSerializer', () => {
         "type": "task",
         "name": "badTask",
         "uuid": "uuid-test-0000-0001-mock",
-        "commit": "replace",
-        "parameters": []
+        "commit": "replace"
       }</pre>
       </div>
       </htms-chunk>
@@ -263,18 +264,18 @@ describe('createHtmsSerializer', () => {
     `);
   });
 
-  it('should serialize a simple html file with [data-htms] and [data-htms-params] attribute', async () => {
+  it('should serialize a simple html file with [data-htms] and [data-htms-value] attribute', async () => {
     mockRandomUUIDIncrement();
 
-    const html = `<div data-htms="goodTask" data-htms-params="{ life: 42, enabled: true }, 'hello'" />\n`;
+    const html = `<div data-htms="goodTask" data-htms-value="{ life: 42, enabled: true }" />\n`;
     const input = createStringStream(html);
-    const result: unknown[] = [];
+    let result: unknown;
     const resolver: Resolver = {
       resolve(info) {
-        return (...parameters) => {
-          result.push(parameters);
+        return (value) => {
+          result = value;
 
-          return Promise.resolve(`resolved task: ${info.name} with parameters: ${JSON.stringify(parameters)}`);
+          return Promise.resolve(`resolved task: ${info.name} with value: ${JSON.stringify(value)}`);
         };
       },
     };
@@ -286,18 +287,18 @@ describe('createHtmsSerializer', () => {
 
     const outputString = await collectString(output);
 
-    expect(result[0]).toStrictEqual([{ enabled: true, life: 42 }, 'hello']);
+    expect(result).toStrictEqual({ enabled: true, life: 42 });
     expect(outputString).toMatchInlineSnapshot(`
-      "<div data-htms="goodTask" data-htms-params="{ life: 42, enabled: true }, 'hello'" data-htms-uuid="uuid-test-0000-0000-mock"/>
-      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">resolved task: goodTask with parameters: [{"life":42,"enabled":true},"hello"]</htms-chunk>
+      "<div data-htms="goodTask" data-htms-value="{ life: 42, enabled: true }" data-htms-uuid="uuid-test-0000-0000-mock"/>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">resolved task: goodTask with value: {"life":42,"enabled":true}</htms-chunk>
       "
     `);
   });
 
-  it('should throws an error if [data-htms-params] is not a valid JSON value', async () => {
+  it('should throws an error if [data-htms-value] is not a valid JSON value', async () => {
     mockRandomUUIDIncrement();
 
-    const html = `<div data-htms="badTask" data-htms-params="1 + 1" />\n`;
+    const html = `<div data-htms="badTask" data-htms-value="1 + 1" />\n`;
     const input = createStringStream(html);
     const resolver: Resolver = {
       resolve(info) {
@@ -313,7 +314,7 @@ describe('createHtmsSerializer', () => {
       .pipeThrough(createHtmsSerializer());
 
     await expect(collectString(output)).rejects.toThrowError(
-      "Failed to parse [data-htms-params] at [1:1]: SyntaxError: JSON5: invalid character '+' at 1:4",
+      "Failed to parse [data-htms-value] at [1:1]: SyntaxError: JSON5: invalid character '+' at 1:3",
     );
   });
 
@@ -322,10 +323,13 @@ describe('createHtmsSerializer', () => {
 
     const html = `<div data-htms="goodTask" data-htms-commit="content" />\n`;
     const input = createStringStream(html);
+    let result: unknown;
     const resolver: Resolver = {
       resolve(info) {
-        return (...parameters) => {
-          return Promise.resolve(`resolved task: ${info.name} with parameters: ${JSON.stringify(parameters)}`);
+        return (value) => {
+          result = value;
+
+          return Promise.resolve(`resolved task: ${info.name} with value: ${JSON.stringify(value)}`);
         };
       },
     };
@@ -337,9 +341,10 @@ describe('createHtmsSerializer', () => {
 
     const outputString = await collectString(output);
 
+    expect(result).toBeUndefined();
     expect(outputString).toMatchInlineSnapshot(`
       "<div data-htms="goodTask" data-htms-commit="content" data-htms-uuid="uuid-test-0000-0000-mock" role="status" aria-busy="true"/>
-      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="content">resolved task: goodTask with parameters: []</htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="content">resolved task: goodTask with value: undefined</htms-chunk>
       "
     `);
   });
