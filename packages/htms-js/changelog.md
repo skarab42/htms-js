@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.0](https://github.com/skarab42/htms-js/compare/htms-js@v0.5.0...htms-js@v0.6.0) (2025-09-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* replace `data-htms-params` with `data-htms-value` ([#42](https://github.com/skarab42/htms-js/issues/42))
+
+### 🐛 Bug Fixes
+
+* start tasks asap ([#39](https://github.com/skarab42/htms-js/issues/39)) ([b5c73cf](https://github.com/skarab42/htms-js/commit/b5c73cf0e12b602a48a12e3b7ff671f6c4a2792e))
+
+
+### 🛠 Refactors
+
+* replace `data-htms-params` with `data-htms-value` ([#42](https://github.com/skarab42/htms-js/issues/42)) ([381ef19](https://github.com/skarab42/htms-js/commit/381ef19138c4e23c31411920efc6c6e450c64b6c))
+
 ## [0.5.0](https://github.com/skarab42/htms-js/compare/htms-js@v0.4.0...htms-js@v0.5.0) (2025-09-17)
 
 
