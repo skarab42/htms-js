@@ -40,19 +40,7 @@ describe('createHtmsSerializer', () => {
           <meta charset="UTF-8" />
           <title>simple html fixture</title>
         <style data-htms-remove-on-cleanup>[data-htms]:empty{display:none}</style>
-      </head>
-        <body>
-          <header>static header</header>
-          <section>
-            <h1>news</h1>
-            <div data-htms="getNews" data-htms-uuid="uuid-test-0000-0000-mock">loading...</div>
-          </section>
-          <section>
-            <h1>articles</h1>
-            <div data-htms="getArticles" data-htms-uuid="uuid-test-0000-0001-mock">loading...</div>
-          </section>
-          <footer>static footer</footer>
-        <script data-htms-remove-on-cleanup>/* eslint-disable no-console */
+      <script data-htms-remove-on-cleanup>/* eslint-disable no-console */
       (() => {
         customElements.define(
           'htms-chunk',
@@ -155,7 +143,19 @@ describe('createHtmsSerializer', () => {
         });
       })();
       </script>
-      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">resolved task: getNews</htms-chunk>
+      </head>
+        <body>
+          <header>static header</header>
+          <section>
+            <h1>news</h1>
+            <div data-htms="getNews" data-htms-uuid="uuid-test-0000-0000-mock">loading...</div>
+          </section>
+          <section>
+            <h1>articles</h1>
+            <div data-htms="getArticles" data-htms-uuid="uuid-test-0000-0001-mock">loading...</div>
+          </section>
+          <footer>static footer</footer>
+        <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">resolved task: getNews</htms-chunk>
       <htms-chunk uuid="uuid-test-0000-0001-mock" commit="replace">resolved task: getArticles</htms-chunk>
       <script data-htms-remove-on-cleanup>htms.cleanup()</script>
       </body>
@@ -198,6 +198,7 @@ describe('createHtmsSerializer', () => {
     expect(outputString).toMatchInlineSnapshot(`
       "<div data-htms="goodTask" data-htms-uuid="uuid-test-0000-0000-mock"/>
       <div data-htms="badTask" data-htms-uuid="uuid-test-0000-0001-mock"/>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">good task done: goodTask</htms-chunk>
       <htms-chunk uuid="uuid-test-0000-0001-mock">
       <div data-htms-error>
       <h2>Unhandled Task Error</h2>
@@ -205,7 +206,6 @@ describe('createHtmsSerializer', () => {
       <p>Please contact the site administrator if the issue persists.</p>
       </div>
       </htms-chunk>
-      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">good task done: goodTask</htms-chunk>
       "
     `);
   });
@@ -245,6 +245,7 @@ describe('createHtmsSerializer', () => {
     expect(outputString).toMatchInlineSnapshot(`
       "<div data-htms="goodTask" data-htms-uuid="uuid-test-0000-0000-mock"/>
       <div data-htms="badTask" data-htms-uuid="uuid-test-0000-0001-mock"/>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">good task done: goodTask</htms-chunk>
       <htms-chunk uuid="uuid-test-0000-0001-mock">
       <div data-htms-error>
       <h2>Unhandled Task Error</h2>
@@ -258,7 +259,6 @@ describe('createHtmsSerializer', () => {
       }</pre>
       </div>
       </htms-chunk>
-      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">good task done: goodTask</htms-chunk>
       "
     `);
   });
