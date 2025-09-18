@@ -3,7 +3,8 @@
   "release-type": "node",
   "tag-separator": "@",
   "include-component-in-tag": true,
-  "separate-pull-requests": true,
+  "separate-pull-requests": false,
+  "bump-minor-pre-major": true,
   "packages": {
     "packages/htms-js": {
       "package-name": "htms-js",
