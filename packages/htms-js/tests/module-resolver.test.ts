@@ -1,12 +1,14 @@
 import path from 'node:path';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { ModuleResolver, type TaskInfo } from '../src/index.js';
 
 const fixturesDirectory = path.resolve(import.meta.dirname, 'fixtures', 'tasks');
 
 const uuidMock = 'uuid-test-0000-0000-mock';
+
+const apiMock = { commit: vi.fn() };
 
 describe('ModuleResolver', () => {
   it('should rejects task when the function is missing', async () => {
@@ -16,7 +18,7 @@ describe('ModuleResolver', () => {
 
     const task = await resolver.resolve(info);
 
-    await expect(task()).rejects.toThrow(`Task function 'notThere' not found in '${file}'`);
+    await expect(task(info.value, apiMock)).rejects.toThrow(`Task function 'notThere' not found in '${file}'`);
   });
 
   it('should resolves a named exported function', async () => {
@@ -26,7 +28,7 @@ describe('ModuleResolver', () => {
 
     const task = await resolver.resolve(info);
 
-    await expect(task()).resolves.toBe('named exported task A completed: undefined');
+    await expect(task(info.value, apiMock)).resolves.toBe('named exported task A completed: undefined');
   });
 
   it('should resolves an default exported function', async () => {
@@ -36,7 +38,7 @@ describe('ModuleResolver', () => {
 
     const task = await resolver.resolve(info);
 
-    await expect(task()).resolves.toBe('default exported task B completed: undefined');
+    await expect(task(info.value, apiMock)).resolves.toBe('default exported task B completed: undefined');
   });
 
   it('should pass parameters to task', async () => {
@@ -47,6 +49,6 @@ describe('ModuleResolver', () => {
 
     const task = await resolver.resolve(info);
 
-    await expect(task(value)).resolves.toBe('default exported task B completed: [{"life":42},"hello"]');
+    await expect(task(value, apiMock)).resolves.toBe('default exported task B completed: [{"life":42},"hello"]');
   });
 });

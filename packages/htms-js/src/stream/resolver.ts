@@ -1,8 +1,16 @@
 import { TransformStream } from 'node:stream/web';
 
-import type { TaskInfo, Token } from './tokenizer.js';
+import type { Commit, TaskInfo, Token } from './tokenizer.js';
 
-export type Task<Value = unknown> = (value?: Value) => PromiseLike<string>;
+export interface TaskApiOptions {
+  mode?: Exclude<Commit, 'replace'>;
+}
+
+export interface TaskApi {
+  commit(html: string, options?: TaskApiOptions): void;
+}
+
+export type Task<Value = unknown> = (value: Value, api: TaskApi) => PromiseLike<string>;
 
 export interface TaskToken extends TaskInfo {
   type: 'task';

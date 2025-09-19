@@ -101,7 +101,7 @@ Visit `http://localhost:3000`: content renders immediately, then fills itself in
 
 When you call `createHtmsFileModulePipeline('./home-page.html')`, HTMS will automatically look for a sibling module file named `./home-page.js` and resolve tasks from there. If you want to:
 
-- **Mix several modules on the same page** → see [Scoped modules](#scoped-modules).
+- **Mix several modules on the same page** → see [Scoped modules](#scoped-modules-data-htms-module).
 - **Point to another file** → use the `specifier` option in the [API](#api).
 - **Provide your own logic** → see [Custom resolvers](#custom-resolvers).
 
@@ -205,14 +205,14 @@ export async function renderOffer(value: [number, { theme: string }]) {
 
 Controls how the streamed result is applied to the placeholder. Default: `replace`.
 
-| Value     | Effect                                              | DOM equivalent               |
-| --------- | --------------------------------------------------- | ---------------------------- |
-| `replace` | Replace the **placeholder node** (outer)            | `host.replaceWith(frag)`     |
-| `content` | Replace the **children** of the placeholder (inner) | `host.replaceChildren(frag)` |
-| `append`  | Append result **as last child**                     | `host.append(frag)`          |
-| `prepend` | Insert result **as first child**                    | `host.prepend(frag)`         |
-| `before`  | Insert result **before** the placeholder            | `host.before(frag)`          |
-| `after`   | Insert result **after** the placeholder             | `host.after(frag)`           |
+| Value     | Effect                                              | DOM equivalent               | Accessibility (`aria-busy`) |
+| --------- | --------------------------------------------------- | ---------------------------- | --------------------------- |
+| `replace` | Replace the **placeholder node** (outer)            | `host.replaceWith(frag)`     | No                          |
+| `content` | Replace the **children** of the placeholder (inner) | `host.replaceChildren(frag)` | Yes                         |
+| `append`  | Append result **as last child**                     | `host.append(frag)`          | Yes                         |
+| `prepend` | Insert result **as first child**                    | `host.prepend(frag)`         | Yes                         |
+| `before`  | Insert result **before** the placeholder            | `host.before(frag)`          | No                          |
+| `after`   | Insert result **after** the placeholder             | `host.after(frag)`           | No                          |
 
 **HTML examples**
 
@@ -260,17 +260,84 @@ Assuming the streamed content is: `<div>Streamed</div>`
 
 **Notes**
 
-- With `append`, `prepend`, `before`, `after`, the placeholder stays in the DOM. Remove or restyle it if needed once the chunk is committed.
-- With `content`, you keep the container (useful for accessibility/live regions).
+- With `append`, `prepend`, `before`, `after`, the placeholder stays in the DOM.
+- With `content`, `append`, or `prepend`, the container is kept (useful for accessibility/live regions).
 
-### Accessibility (content mode)
+### Accessibility (`content`, `append`, `prepend` modes)
 
-When `data-htms-commit="content"` is used, HTMS automatically marks the placeholder as a **polite live region** while it is pending:
+When `data-htms-commit="content"`, `append`, or `prepend` is used, HTMS automatically marks the placeholder as a **polite live region** while it is pending:
 
 - Adds `role="status"` and `aria-busy="true"` on the host before the first update.
-- On commit, flips `aria-busy` to `false` so screen readers announce the final content once.
+- On the first update, sets `aria-busy="false"`, so screen readers announce the content as soon as it arrives.
+- Screen readers will announce any further chunks (additional updates) directly, since `aria-busy` stays `false`.
 
-This gives you accessible announcements out of the box, without extra markup. If you need a different behavior, switch to another commit mode or set your own ARIA attributes on the host.
+This gives you accessible announcements out of the box, without extra markup.
+
+**Tips for accessibility:**
+
+- If accessibility is a priority, avoid too many updates: prefer a single update ("one shot") if the task is fast enough to prevent excessive announcements.
+
+---
+
+## Task API: `api.commit(...)`
+
+Use `api.commit(mode, html)` inside a task to push partial updates before the final return.
+
+Minimal shape (JS):
+
+```js
+// In a task: (value, api) => Promise<string>
+api.commit(mode, html); // mode: 'content' | 'append' | 'prepend' | 'before' | 'after'
+```
+
+Type definitions (TypeScript):
+
+```ts
+export type Commit = 'replace' | 'content' | 'append' | 'prepend' | 'before' | 'after';
+
+export interface TaskApi {
+  // 'replace' is reserved for the final return; partial commits use the other modes
+  commit(mode: Exclude<Commit, 'replace'>, html: string): void;
+}
+
+export type Task<Value = unknown> = (value: Value, api: TaskApi) => PromiseLike<string>;
+```
+
+Rules:
+
+- Allowed modes: `content`, `append`, `prepend`, `before`, `after` (not `replace`).
+- Each `api.commit(...)` emits a partial chunk applied immediately on the client.
+- The final HTML is the task’s return value and uses the host’s `data-htms-commit`. With `data-htms-commit="append"`, returning `''` performs no DOM change (just cleanup).
+
+Example (stream items with `append`):
+
+```html
+<!-- Host is the final container; we append <li> items into it -->
+<ul data-htms="loadFeed" data-htms-commit="append">
+  <li>Loading…</li>
+</ul>
+```
+
+```js
+// tasks.js
+export async function loadFeed(_value, api) {
+  // Clear the placeholder once (optional if already empty)
+  api.commit('content', '');
+
+  // Any async iterable of items
+  for await (const item of getFeedAsyncIterable()) {
+    api.commit('append', `<li>${item.title}</li>`);
+  }
+
+  // Final empty return with host commit="append" → no DOM change, just cleanup
+  return '';
+}
+```
+
+Notes:
+
+- Fragments must be well‑formed HTML. Use the host as the container; don’t stream unbalanced tags.
+- `content`, `append`, and `prepend` automatically manage live-region ARIA. If you need announcements, use these modes.
 
 ---
 

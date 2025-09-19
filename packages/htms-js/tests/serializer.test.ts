@@ -48,6 +48,7 @@ describe('createHtmsSerializer', () => {
             connectedCallback() {
               const uuid = this.getAttribute('uuid');
               const commitMode = this.getAttribute('commit');
+              const partial = this.getAttribute('partial');
 
               if (!uuid) {
                 console.warn("[htms-chunk] missing 'uuid' attribute:", this);
@@ -64,7 +65,11 @@ describe('createHtmsSerializer', () => {
 
               requestAnimationFrame(() => {
                 commit(host, this.innerHTML, commitMode);
-                removeHtmsAttributes(host);
+
+                if (typeof partial !== 'string' || partial.trim() === 'false') {
+                  removeHtmsAttributes(host);
+                }
+
                 this.remove();
               });
             }
@@ -98,10 +103,12 @@ describe('createHtmsSerializer', () => {
             }
             case 'append': {
               host.append(fragment);
+              host.setAttribute('aria-busy', 'false');
               break;
             }
             case 'prepend': {
               host.prepend(fragment);
+              host.setAttribute('aria-busy', 'false');
               break;
             }
             case 'before': {
@@ -345,6 +352,40 @@ describe('createHtmsSerializer', () => {
     expect(outputString).toMatchInlineSnapshot(`
       "<div data-htms="goodTask" data-htms-commit="content" data-htms-uuid="uuid-test-0000-0000-mock" role="status" aria-busy="true"/>
       <htms-chunk uuid="uuid-test-0000-0000-mock" commit="content">resolved task: goodTask with value: undefined</htms-chunk>
+      "
+    `);
+  });
+
+  it('should commit partial chunks', async () => {
+    mockRandomUUIDIncrement();
+
+    const html = `<div data-htms="partialTask" />\n`;
+    const input = createStringStream(html);
+    const resolver: Resolver = {
+      resolve(info) {
+        return (value, api) => {
+          api.commit('<div>First partial chunk</div>', { mode: 'before' });
+          api.commit('<div>Second partial chunk</div>');
+          api.commit('<div>Third partial chunk</div>', { mode: 'after' });
+
+          return Promise.resolve(`resolved task: ${info.name} with parameters: ${JSON.stringify(value)}`);
+        };
+      },
+    };
+
+    const output = input
+      .pipeThrough(createHtmsTokenizer())
+      .pipeThrough(createHtmsResolver(resolver))
+      .pipeThrough(createHtmsSerializer());
+
+    const outputString = await collectString(output);
+
+    expect(outputString).toMatchInlineSnapshot(`
+      "<div data-htms="partialTask" data-htms-uuid="uuid-test-0000-0000-mock"/>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="before" partial="true"><div>First partial chunk</div></htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="append" partial="true"><div>Second partial chunk</div></htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="after" partial="true"><div>Third partial chunk</div></htms-chunk>
+      <htms-chunk uuid="uuid-test-0000-0000-mock" commit="replace">resolved task: partialTask with parameters: undefined</htms-chunk>
       "
     `);
   });

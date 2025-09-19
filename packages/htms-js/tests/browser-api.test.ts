@@ -17,9 +17,18 @@ function createHost(uuid: string, html = ''): void {
 
 function createChunk(uuid: string, commit: Commit): void {
   const chunk = document.createElement('htms-chunk');
-  chunk.setAttribute('commit', commit);
   chunk.setAttribute('uuid', uuid);
+  chunk.setAttribute('commit', commit);
   chunk.innerHTML = '<span>contents...</span>';
+  document.body.append(chunk);
+}
+
+function createPartialChunk(uuid: string, commit: Commit, html: string): void {
+  const chunk = document.createElement('htms-chunk');
+  chunk.setAttribute('uuid', uuid);
+  chunk.setAttribute('commit', commit);
+  chunk.setAttribute('partial', '');
+  chunk.innerHTML = `\n${html}`;
   document.body.append(chunk);
 }
 
@@ -94,7 +103,7 @@ describe('<htms-chunk> with commit', () => {
     createChunk(uuid, 'append');
 
     expect(document.body.innerHTML).toMatchInlineSnapshot(
-      `"<div class="host"><h2>title</h2><span>contents...</span></div>"`,
+      `"<div class="host" aria-busy="false"><h2>title</h2><span>contents...</span></div>"`,
     );
   });
 
@@ -105,7 +114,7 @@ describe('<htms-chunk> with commit', () => {
     createChunk(uuid, 'prepend');
 
     expect(document.body.innerHTML).toMatchInlineSnapshot(
-      `"<div class="host"><span>contents...</span><h2>title</h2></div>"`,
+      `"<div class="host" aria-busy="false"><span>contents...</span><h2>title</h2></div>"`,
     );
   });
 
@@ -128,6 +137,40 @@ describe('<htms-chunk> with commit', () => {
 
     expect(document.body.innerHTML).toMatchInlineSnapshot(
       `"<div class="host"><h2>title</h2></div><span>contents...</span>"`,
+    );
+  });
+});
+
+describe('<htms-chunk> with partial commit', () => {
+  it('should appends partial chunk to the host', async () => {
+    const uuid = 'uuid-test-0000-0000-mock';
+
+    createHost(uuid, '\n<h2>host-title</h2>');
+    createPartialChunk(uuid, 'prepend', '<h1>chunk-1</h1>');
+    createPartialChunk(uuid, 'append', '<article>chunk-2</article>');
+    createPartialChunk(uuid, 'append', '<article>chunk-3</article>');
+
+    expect(document.body.innerHTML).toMatchInlineSnapshot(
+      `
+      "<div class="host" data-htms-uuid="uuid-test-0000-0000-mock" aria-busy="false">
+      <h1>chunk-1</h1>
+      <h2>host-title</h2>
+      <article>chunk-2</article>
+      <article>chunk-3</article></div>"
+    `,
+    );
+
+    // should insert the last chunk after host and remove [data-htms-uuid] attribute on it
+    createChunk(uuid, 'after');
+
+    expect(document.body.innerHTML).toMatchInlineSnapshot(
+      `
+      "<div class="host" aria-busy="false">
+      <h1>chunk-1</h1>
+      <h2>host-title</h2>
+      <article>chunk-2</article>
+      <article>chunk-3</article></div><span>contents...</span>"
+    `,
     );
   });
 });
