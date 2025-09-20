@@ -18,12 +18,12 @@
     "packages/fastify-htms": {
       "package-name": "fastify-htms",
       "changelog-path": "changelog.md",
-      "additional-paths": ["packages/htms-js"]
+      "additional-paths": ["packages/htms-dom", "packages/htms-js"]
     },
     "packages/htms-server": {
       "package-name": "htms-server",
       "changelog-path": "changelog.md",
-      "additional-paths": ["packages/fastify-htms"]
+      "additional-paths": ["packages/htms-dom", "packages/htms-js", "packages/fastify-htms"]
     }
   },
   "changelog-sections": [

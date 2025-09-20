@@ -1,8 +1,9 @@
 # htms 💨 Stream Async HTML, Stay SEO-Friendly
 
-[![npm htms-js](https://img.shields.io/npm/v/htms-js.svg?label=htms-js&color=blue)](./packages/htms-js)
-[![npm fastify-htms](https://img.shields.io/npm/v/fastify-htms.svg?label=fastify-htms&color=blue)](./packages/fastify-htms)
-[![npm fastify-htms](https://img.shields.io/npm/v/htms-server.svg?label=htms-server&color=blue)](./packages/htms-server)
+[![npm htms-dom](https://img.shields.io/npm/v/htms-dom.svg?label=htms-js&color=blue)](https://www.npmjs.com/package/htms-dom)
+[![npm htms-js](https://img.shields.io/npm/v/htms-js.svg?label=htms-js&color=blue)](https://www.npmjs.com/package/htms-js)
+[![npm fastify-htms](https://img.shields.io/npm/v/fastify-htms.svg?label=fastify-htms&color=blue)](https://www.npmjs.com/package/fastify-htms)
+[![npm fastify-htms](https://img.shields.io/npm/v/htms-server.svg?label=htms-server&color=blue)](https://www.npmjs.com/package/htms-server)
 [![build status](https://img.shields.io/github/actions/workflow/status/skarab42/htms-js/ci.yml?branch=main&label=ci)](https://github.com/skarab42/htms-js/actions)
 [![codecov](https://codecov.io/github/skarab42/htms-js/branch/main/graph/badge.svg)](https://codecov.io/github/skarab42/htms-js)
 [![license](https://img.shields.io/github/license/skarab42/htms-js)](./license.md)
