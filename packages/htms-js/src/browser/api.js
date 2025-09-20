@@ -6,6 +6,7 @@
       connectedCallback() {
         const uuid = this.getAttribute('uuid');
         const commitMode = this.getAttribute('commit');
+        const partial = this.getAttribute('partial');
 
         if (!uuid) {
           console.warn("[htms-chunk] missing 'uuid' attribute:", this);
@@ -22,7 +23,11 @@
 
         requestAnimationFrame(() => {
           commit(host, this.innerHTML, commitMode);
-          removeHtmsAttributes(host);
+
+          if (typeof partial !== 'string' || partial.trim() === 'false') {
+            removeHtmsAttributes(host);
+          }
+
           this.remove();
         });
       }
@@ -56,10 +61,12 @@
       }
       case 'append': {
         host.append(fragment);
+        host.setAttribute('aria-busy', 'false');
         break;
       }
       case 'prepend': {
         host.prepend(fragment);
+        host.setAttribute('aria-busy', 'false');
         break;
       }
       case 'before': {

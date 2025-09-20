@@ -3,21 +3,28 @@ import { TransformStream } from 'node:stream/web';
 import { escapeAttribute } from 'entities/escape';
 
 import { getApiSource } from '../browser/index.js';
-import type { ResolverToken, TaskToken } from './resolver.js';
-import type { EndToken, StartTag, StartToken } from './tokenizer.js';
+import type { ResolverToken, TaskApi, TaskToken } from './resolver.js';
+import type { Commit, EndToken, StartTag, StartToken } from './tokenizer.js';
 
 const browserApiSource = getApiSource();
 
-function formatStartTag(token: StartTag): string {
-  let output = `<${token.tagName}`;
+interface Attribute {
+  name: string;
+  value?: string;
+}
 
-  for (const attribute of token.attrs) {
-    output += ` ${attribute.name}="${escapeAttribute(attribute.value)}"`;
+function formatAttributes(attributes: Attribute[]): string {
+  let output = '';
+
+  for (const attribute of attributes) {
+    output += attribute.value ? ` ${attribute.name}="${escapeAttribute(attribute.value)}"` : ` ${attribute.name}"`;
   }
 
-  output += token.selfClosing ? '/>' : '>';
-
   return output;
+}
+
+function formatStartTag(token: StartTag): string {
+  return `<${token.tagName}${formatAttributes(token.attrs)}${token.selfClosing ? '/>' : '>'}`;
 }
 
 type Controller = TransformStreamDefaultController<string>;
@@ -47,11 +54,39 @@ function processEndTag(token: EndToken, controller: Controller): void {
   controller.enqueue(token.html);
 }
 
+interface CommitSettings {
+  mode: Commit;
+  token: TaskToken;
+  controller: Controller;
+  partial: boolean;
+  html: string;
+}
+
+function commit(settings: CommitSettings): void {
+  const attributes: Attribute[] = [
+    { name: 'uuid', value: settings.token.uuid },
+    { name: 'commit', value: settings.mode },
+  ];
+
+  if (settings.partial) {
+    attributes.push({ name: 'partial', value: 'true' });
+  }
+
+  settings.controller.enqueue(`<htms-chunk${formatAttributes(attributes)}>${settings.html}</htms-chunk>\n`);
+}
+
+function createApi(token: TaskToken, controller: Controller): TaskApi {
+  return {
+    commit: (html, options) =>
+      commit({ token, controller, html, mode: options?.mode ?? 'append', ...options, partial: true }),
+  };
+}
+
 async function runTask(token: TaskToken, controller: Controller, debug: boolean): Promise<void> {
   try {
-    const output = await token.task(token.value);
+    const api = createApi(token, controller);
 
-    controller.enqueue(`<htms-chunk uuid="${token.uuid}" commit="${token.commit}">${output}</htms-chunk>\n`);
+    commit({ token, controller, mode: token.commit, html: await token.task(token.value, api), partial: false });
   } catch (error_) {
     const title = 'Unhandled Task Error';
     const error = error_ instanceof Error ? error_ : new Error(String(error_));
@@ -92,6 +127,8 @@ export interface HtmsSerializerOptions {
   debug?: boolean | undefined;
 }
 
+const busyStatus = new Set(['content', 'append', 'prepend']);
+
 export function createHtmsSerializer(options?: HtmsSerializerOptions | undefined): SerializerStream {
   const { debug = false } = options ?? {};
   const seenEndTags = new Set<string>();
@@ -115,7 +152,7 @@ export function createHtmsSerializer(options?: HtmsSerializerOptions | undefined
           removeHtmsAttribute(token, 'module');
           setHtmsAttribute(token, 'uuid', token.taskInfo.uuid);
 
-          if (token.taskInfo.commit === 'content') {
+          if (busyStatus.has(token.taskInfo.commit)) {
             setAttribute(token, 'role', 'status');
             setAttribute(token, 'aria-busy', 'true');
           }
