@@ -5,15 +5,31 @@ on:
     types:
       - completed
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   issues: write
   contents: write
   pull-requests: write
 
-name: RELEASE
+name: release-please
 
 jobs:
-  release-please:
+  pull-request:
+    if: github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'develop'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          target-branch: develop
+          skip-github-release: true
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+  tag-release:
     if: github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
       github.event.workflow_run.head_branch == 'main'
@@ -21,4 +37,6 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@v4
         with:
+          target-branch: main
+          skip-github-pull-request: true
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
