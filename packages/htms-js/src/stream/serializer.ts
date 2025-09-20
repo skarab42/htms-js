@@ -51,6 +51,7 @@ function processEndTag(token: EndToken, controller: Controller): void {
   if (token.tag.tagName === 'head') {
     controller.enqueue('<style data-htms-remove-on-cleanup>[data-htms]:empty{display:none}</style>\n');
     controller.enqueue(`<script data-htms-remove-on-cleanup>${htmsDomSource}</script>\n`);
+    controller.enqueue(`<script data-htms-remove-on-cleanup>htms.setup();</script>\n`);
   }
 
   controller.enqueue(token.html);
