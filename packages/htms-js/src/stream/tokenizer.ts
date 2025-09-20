@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { TransformStream } from 'node:stream/web';
 
+import { type CommitMode, commitModes, defaultCommitMode, isCommitMode } from 'htms-dom/commit-mode';
 import JSON5 from 'json5';
 import { RewritingStream } from 'parse5-html-rewriting-stream';
 
@@ -29,22 +30,13 @@ export interface RawHtmlToken extends Omit<BaseToken, 'tag'> {
   type: 'rawHtml';
 }
 
-const commits = ['replace', 'content', 'append', 'prepend', 'before', 'after'] as const;
-
-export type CommitMode = typeof commits;
-export type Commit = CommitMode[number];
-
-function isCommit(commit: string): commit is Commit {
-  return commits.includes(commit as Commit);
-}
-
-function parseCommit(commit: string | undefined): Commit {
+function parseCommitMode(commit: string | undefined): CommitMode {
   if (!commit) {
-    return 'replace';
+    return defaultCommitMode;
   }
 
-  if (!isCommit(commit)) {
-    throw new TypeError(`Unexpected commit mode '${commit}', expected one of '${commits.join('|')}'`);
+  if (!isCommitMode(commit)) {
+    throw new TypeError(`Unexpected commit mode '${commit}', expected one of '${commitModes.join('|')}'`);
   }
 
   return commit;
@@ -53,7 +45,7 @@ function parseCommit(commit: string | undefined): Commit {
 export interface TaskInfo {
   name: string;
   uuid: string;
-  commit: Commit;
+  commit: CommitMode;
   value: unknown;
 }
 
@@ -115,7 +107,7 @@ export function createHtmsTokenizer(): TokenizerStream {
             const taskInfo: TaskInfo = {
               name: dataHtms,
               uuid: randomUUID(),
-              commit: parseCommit(htmsCommit),
+              commit: parseCommitMode(htmsCommit),
               value: parseValue(htmsValue),
             };
 

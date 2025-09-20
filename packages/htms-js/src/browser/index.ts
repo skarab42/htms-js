@@ -1,15 +1,20 @@
 import fs from 'node:fs';
-import path from 'node:path';
+import { createRequire } from 'node:module';
 
-const api = path.resolve(import.meta.dirname, 'api.js');
-const min = path.resolve(import.meta.dirname, 'api.min.js');
+let htmsDomSource: string;
 
-let source: string;
+export function resolveHtmsDomModulePath(minified = true): string {
+  const require = createRequire(import.meta.url);
 
-export function getApiSource(): string {
-  if (!source) {
-    source = fs.readFileSync(fs.existsSync(min) ? min : api, 'utf8');
+  return require.resolve(minified ? 'htms-dom/umd-min' : 'htms-dom/umd');
+}
+
+export function getHtmsDomSource(minified = true): string {
+  if (!htmsDomSource) {
+    htmsDomSource = fs.readFileSync(resolveHtmsDomModulePath(minified), 'utf8');
   }
 
-  return source;
+  return htmsDomSource;
 }
+
+// TODO: implement `getHtmsDomUrl(minified: boolean): string` when `htms-dom@0.1.0` is released

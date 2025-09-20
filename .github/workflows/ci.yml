@@ -51,6 +51,14 @@ jobs:
       - name: Test • Coverage
         run: pnpm coverage
 
+      - name: Upload htms-dom coverage
+        uses: codecov/codecov-action@v5
+        with:
+          name: htms-dom
+          flags: htms-dom
+          files: ./packages/htms-dom/coverage/lcov.info
+          fail_ci_if_error: true
+
       - name: Upload htms-js coverage
         uses: codecov/codecov-action@v5
         with:

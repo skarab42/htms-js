@@ -19,6 +19,7 @@ This monorepo hosts the JavaScript implementation of **HTMS**: a proposal to pro
 This workspace contains multiple packages:
 
 - [**htms-js**](./packages/htms-js) – Core library to tokenize, resolve, and stream HTML.
+- [**htms-dom**](./packages/htms-dom) – Core browser library to swap and clean placeholders.
 - [**fastify-htms**](./packages/fastify-htms) – Fastify plugin that wires `htms-js` into Fastify routes.
 - [**htms-server**](./packages/htms-server) – CLI to quickly spin up a server and test streaming HTML.
 
@@ -74,6 +75,57 @@ We'd love developers to:
 - **See if it fits your framework or stack.**
 
 ---
+
+## Development
+
+Setup
+
+```bash
+git clone https://github.com/skarab42/htms-js.git
+cd htms-js
+pnpm i
+pnpm build
+```
+
+Common dev commands
+
+```bash
+# format + lint + typecheck + build + test
+pnpm check
+
+# run tests
+pnpm test
+pnpm test:watch
+
+# lint / format
+pnpm lint:check
+pnpm lint:fix
+pnpm format:check
+pnpm format:write
+
+# code coverage
+pnpm coverage
+
+# build all packages
+pnpm build
+```
+
+Run examples
+
+```bash
+# run from repo root, pick one:
+pnpm --filter server-example start # published dashboard demo at https://htms.skarab42.dev
+pnpm --filter hono-example start
+pnpm --filter fastify-example start
+pnpm --filter express-example start
+pnpm --filter stdout-example start
+```
+
+Reset workspace
+
+```bash
+pnpm reset
+```
 
 ## Contribute
 

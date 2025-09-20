@@ -1,11 +1,10 @@
 // @vitest-environment jsdom
 /// <reference lib="dom" />
 
-import '../src/browser/api.js';
-
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Commit } from '../src/index.js';
+import { cleanup, setup } from '../src';
+import type { CommitMode } from '../src/commit-mode';
 
 function createHost(uuid: string, html = ''): void {
   const host = document.createElement('div');
@@ -15,7 +14,7 @@ function createHost(uuid: string, html = ''): void {
   document.body.append(host);
 }
 
-function createChunk(uuid: string, commit: Commit): void {
+function createChunk(uuid: string, commit: CommitMode): void {
   const chunk = document.createElement('htms-chunk');
   chunk.setAttribute('uuid', uuid);
   chunk.setAttribute('commit', commit);
@@ -23,7 +22,7 @@ function createChunk(uuid: string, commit: Commit): void {
   document.body.append(chunk);
 }
 
-function createPartialChunk(uuid: string, commit: Commit, html: string): void {
+function createPartialChunk(uuid: string, commit: CommitMode, html: string): void {
   const chunk = document.createElement('htms-chunk');
   chunk.setAttribute('uuid', uuid);
   chunk.setAttribute('commit', commit);
@@ -33,6 +32,7 @@ function createPartialChunk(uuid: string, commit: Commit, html: string): void {
 }
 
 beforeAll(() => {
+  setup();
   vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => callback(0));
 });
 
@@ -42,23 +42,23 @@ beforeEach(() => {
 });
 
 describe('<htms-chunk>', () => {
-  it('should warn if the uuid attribute is missing', async () => {
-    const warn = vi.spyOn(console, 'warn');
+  it('should error if the uuid attribute is missing', async () => {
+    const error = vi.spyOn(console, 'error');
     const chunk = document.createElement('htms-chunk');
 
     document.body.append(chunk);
 
-    expect(warn).toHaveBeenCalledWith("[htms-chunk] missing 'uuid' attribute:", expect.any(HTMLElement));
+    expect(error).toHaveBeenCalledWith("[htms-chunk] missing 'uuid' attribute:", expect.any(HTMLElement));
   });
 
-  it('should warn if the target element is not found', async () => {
-    const warn = vi.spyOn(console, 'warn');
+  it('should error if the target element is not found', async () => {
+    const error = vi.spyOn(console, 'error');
     const chunk = document.createElement('htms-chunk');
     chunk.setAttribute('uuid', 'nope');
 
     document.body.append(chunk);
 
-    expect(warn).toHaveBeenCalledWith(
+    expect(error).toHaveBeenCalledWith(
       '[htms-chunk] target element not found with selector \'[data-htms-uuid="nope"]\'',
     );
   });
@@ -183,17 +183,8 @@ describe('htms.cleanup()', () => {
       document.body.append(element);
     }
 
-    // @ts-expect-error - Element implicitly has an any type because type typeof globalThis has no index signature.
-    globalThis.htms.cleanup();
+    cleanup();
 
     expect(document.querySelectorAll('[data-htms-remove-on-cleanup]').length).toBe(0);
-  });
-
-  it('should be not writable/configurable', () => {
-    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'htms');
-
-    expect(descriptor).not.toBeUndefined();
-    expect(descriptor?.writable).toBe(false);
-    expect(descriptor?.configurable).toBe(false);
   });
 });

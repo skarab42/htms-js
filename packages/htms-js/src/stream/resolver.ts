@@ -1,9 +1,11 @@
 import { TransformStream } from 'node:stream/web';
 
-import type { Commit, TaskInfo, Token } from './tokenizer.js';
+import type { CommitMode } from 'htms-dom/commit-mode';
+
+import type { TaskInfo, Token } from './tokenizer.js';
 
 export interface TaskApiOptions {
-  mode?: Exclude<Commit, 'replace'>;
+  mode?: Exclude<CommitMode, 'replace'>;
 }
 
 export interface TaskApi {

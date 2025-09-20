@@ -1,4 +1,5 @@
 {
+  "packages/htms-dom": "0.0.0",
   "packages/htms-js": "0.6.0",
   "packages/fastify-htms": "0.6.0",
   "packages/htms-server": "0.6.0"

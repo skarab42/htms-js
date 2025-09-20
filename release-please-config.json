@@ -6,9 +6,14 @@
   "separate-pull-requests": false,
   "bump-minor-pre-major": true,
   "packages": {
+    "packages/htms-dom": {
+      "package-name": "htms-dom",
+      "changelog-path": "changelog.md"
+    },
     "packages/htms-js": {
       "package-name": "htms-js",
-      "changelog-path": "changelog.md"
+      "changelog-path": "changelog.md",
+      "additional-paths": ["packages/htms-dom"]
     },
     "packages/fastify-htms": {
       "package-name": "fastify-htms",

@@ -1,7 +1,7 @@
 {
-  "name": "htms-server",
+  "name": "htms-dom",
   "description": "HTMS 💨 Stream Async HTML, Stay SEO-Friendly",
-  "version": "0.6.0",
+  "version": "0.0.0",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -18,45 +18,55 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": {
-    "htms-server": "./bin/htms-server.js"
-  },
+  "unpkg": "./dist/umd/index.js",
+  "jsdelivr": "./dist/umd/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
+      "browser": "./dist/umd/index.js",
       "default": "./dist/index.js"
-    }
+    },
+    "./commit-mode": {
+      "types": "./dist/commit-mode.d.ts",
+      "import": "./dist/commit-mode.js",
+      "default": "./dist/commit-mode.js"
+    },
+    "./umd": {
+      "import": "./dist/umd/index.js",
+      "default": "./dist/umd/index.js"
+    },
+    "./umd-min": {
+      "import": "./dist/umd/index.min.js",
+      "default": "./dist/umd/index.min.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "bin",
     "dist"
   ],
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "pnpm clean && tsc -p ./tsconfig.build.json",
+    "build:umd": "node ./build-umd.mjs",
+    "build:ts": "tsc -p ./tsconfig.build.json",
+    "build": "pnpm clean && pnpm build:umd && pnpm build:ts",
     "build:check": "tsc -p ./tsconfig.json",
-    "build:watch": "pnpm build --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage"
   },
-  "dependencies": {
-    "@fastify/compress": "^8.1.0",
-    "@fastify/static": "^8.2.0",
-    "cac": "^6.7.14",
-    "fastify": "^5.6.0",
-    "fastify-htms": "workspace:*"
+  "devDependencies": {
+    "esbuild": "^0.25.10"
   },
   "packageManager": "pnpm@10.15.1",
   "engines": {
     "node": "22.x || 24.x"
   },
   "keywords": [
-    "fastify",
     "stream",
     "async",
     "html",
-    "seo"
+    "seo",
+    "dom"
   ]
 }
