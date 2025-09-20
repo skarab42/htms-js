@@ -2,7 +2,7 @@ import './fixtures/crypto.mock.js';
 
 import path from 'node:path';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   createFileStream,
@@ -15,6 +15,8 @@ import { mockRandomUUIDIncrement, mockRandomUUIDOnce } from './fixtures/crypto.m
 import { collect } from './fixtures/stream.helpers.js';
 
 const simpleHtmlFixture = path.resolve(import.meta.dirname, './fixtures/html/simple.html');
+
+const apiMock = { commit: vi.fn() };
 
 describe('createHtmsResolver', () => {
   it('should resolve tasks and sort tasks at the end of the stream', async () => {
@@ -50,8 +52,8 @@ describe('createHtmsResolver', () => {
       commit: 'replace',
       value: undefined,
     });
-    await expect(newsTaskToken.task()).resolves.toBe('task done: getNews');
-    await expect(articlesTaskToken.task()).resolves.toBe('task done: getArticles');
+    await expect(newsTaskToken.task(newsTaskToken.value, apiMock)).resolves.toBe('task done: getNews');
+    await expect(articlesTaskToken.task(articlesTaskToken.value, apiMock)).resolves.toBe('task done: getArticles');
   });
 
   it('should throw error when the task throw an error', async () => {
@@ -73,7 +75,9 @@ describe('createHtmsResolver', () => {
 
     expect(tokens).toHaveLength(54);
 
-    await expect(articlesTaskToken.task()).rejects.toThrowError('task error: getArticles');
+    await expect(articlesTaskToken.task(articlesTaskToken.value, apiMock)).rejects.toThrowError(
+      'task error: getArticles',
+    );
   });
 
   it('should throw error when the resolved task is not a function', async () => {
