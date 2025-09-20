@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/skarab42/htms-js/compare/fastify-htms@v0.6.0...fastify-htms@v0.8.0) (2025-09-20)
+
+
+### 🧹 Chores
+
+* **fastify-htms:** Synchronize all versions
+
 ## [0.6.0](https://github.com/skarab42/htms-js/compare/fastify-htms@v0.5.0...fastify-htms@v0.6.0) (2025-09-18)
 
 
