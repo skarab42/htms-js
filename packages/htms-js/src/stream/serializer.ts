@@ -3,11 +3,12 @@ import { TransformStream } from 'node:stream/web';
 import { escapeAttribute } from 'entities/escape';
 import type { CommitMode } from 'htms-dom/commit-mode';
 
-import { getApiSource } from '../browser/index.js';
+import { getHtmsDomSource } from '../browser/index.js';
 import type { ResolverToken, TaskApi, TaskToken } from './resolver.js';
 import type { EndToken, StartTag, StartToken } from './tokenizer.js';
 
-const browserApiSource = getApiSource();
+const minified = true; // TODO: make configurable
+const htmsDomSource = getHtmsDomSource(minified);
 
 interface Attribute {
   name: string;
@@ -49,7 +50,7 @@ function processEndTag(token: EndToken, controller: Controller): void {
 
   if (token.tag.tagName === 'head') {
     controller.enqueue('<style data-htms-remove-on-cleanup>[data-htms]:empty{display:none}</style>\n');
-    controller.enqueue(`<script data-htms-remove-on-cleanup>${browserApiSource}</script>\n`);
+    controller.enqueue(`<script data-htms-remove-on-cleanup>${htmsDomSource}</script>\n`);
   }
 
   controller.enqueue(token.html);
