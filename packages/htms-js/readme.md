@@ -119,7 +119,14 @@ cd htms-js
 pnpm i && pnpm build
 ```
 
-Run `pnpm --filter (express|fastify|hono|stdout|server)-example start` to try them.
+```bash
+# run from repo root, pick one:
+pnpm --filter server-example start # published dashboard demo at https://htms.skarab42.dev
+pnpm --filter hono-example start
+pnpm --filter fastify-example start
+pnpm --filter express-example start
+pnpm --filter stdout-example start
+```
 
 ---
 
