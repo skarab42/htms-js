@@ -1,7 +1,7 @@
 {
-  "name": "htms-js",
+  "name": "htms-dom",
   "description": "HTMS 💨 Stream Async HTML, Stay SEO-Friendly",
-  "version": "0.6.0",
+  "version": "0.0.0",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -18,36 +18,45 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "unpkg": "./dist/umd/index.js",
+  "jsdelivr": "./dist/umd/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
+      "browser": "./dist/umd/index.js",
       "default": "./dist/index.js"
-    }
+    },
+    "./commit-mode": {
+      "types": "./dist/commit-mode.d.ts",
+      "import": "./dist/commit-mode.js",
+      "default": "./dist/commit-mode.js"
+    },
+    "./umd": {
+      "import": "./dist/umd/index.js",
+      "default": "./dist/umd/index.js"
+    },
+    "./umd-min": {
+      "import": "./dist/umd/index.min.js",
+      "default": "./dist/umd/index.min.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "clean": "rimraf ./dist",
-    "build:ts": "tsc -p tsconfig.build.json",
-    "build:js": "tsc -p ./src/browser/tsconfig.build.json",
-    "minify": "terser ./dist/browser/api.js -o ./dist/browser/api.min.js --compress --mangle",
-    "build": "pnpm clean && pnpm build:js && pnpm build:ts && pnpm minify",
+    "build:umd": "node ./build-umd.mjs",
+    "build:ts": "tsc -p ./tsconfig.build.json",
+    "build": "pnpm clean && pnpm build:umd && pnpm build:ts",
     "build:check": "tsc -p ./tsconfig.json",
-    "build:watch": "pnpm build --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage"
   },
-  "dependencies": {
-    "entities": "^7.0.0",
-    "htms-dom": "workspace:*",
-    "json5": "^2.2.3",
-    "parse5-html-rewriting-stream": "^8.0.0"
-  },
   "devDependencies": {
-    "terser": "^5.44.0"
+    "esbuild": "^0.25.10"
   },
   "packageManager": "pnpm@10.15.1",
   "engines": {
@@ -57,6 +66,7 @@
     "stream",
     "async",
     "html",
-    "seo"
+    "seo",
+    "dom"
   ]
 }

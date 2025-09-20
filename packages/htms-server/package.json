@@ -19,7 +19,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "htms-server": "./dist/cli.js"
+    "htms-server": "./bin/htms-server.js"
   },
   "exports": {
     ".": {
@@ -29,6 +29,7 @@
     }
   },
   "files": [
+    "bin",
     "dist"
   ],
   "scripts": {

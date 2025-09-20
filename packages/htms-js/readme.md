@@ -119,7 +119,13 @@ cd htms-js
 pnpm i && pnpm build
 ```
 
-Run `pnpm --filter (express|fastify|hono|stdout|server)-example start` to try them.
+```bash
+pnpm --filter express-example start
+pnpm --filter fastify-example start
+pnpm --filter hono-example start
+pnpm --filter stdout-example start
+pnpm --filter server-example start # this is the published dashboard demo
+```
 
 ---
 
@@ -496,6 +502,54 @@ We'd love developers to:
 - **See if it fits your framework or stack.**
 
 ---
+
+## Development
+
+Quick setup
+
+```bash
+git clone https://github.com/skarab42/htms-js.git
+cd htms-js
+pnpm i
+pnpm build
+```
+
+Common one-liners
+
+```bash
+# format + lint + typecheck + build + test
+pnpm check
+
+# run tests
+pnpm test
+pnpm test:watch
+
+# lint / format
+pnpm lint:check
+pnpm lint:fix
+pnpm format:check
+pnpm format:write
+
+# build all packages
+pnpm build
+```
+
+Run examples
+
+```bash
+# run from repo root, pick one:
+pnpm --filter express-example start
+pnpm --filter fastify-example start
+pnpm --filter hono-example start
+pnpm --filter stdout-example start
+pnpm --filter server-example start
+```
+
+Reset workspace
+
+```bash
+pnpm reset
+```
 
 ## Contribute
 

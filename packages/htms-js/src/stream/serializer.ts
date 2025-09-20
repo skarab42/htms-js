@@ -1,10 +1,11 @@
 import { TransformStream } from 'node:stream/web';
 
 import { escapeAttribute } from 'entities/escape';
+import type { CommitMode } from 'htms-dom/commit-mode';
 
 import { getApiSource } from '../browser/index.js';
 import type { ResolverToken, TaskApi, TaskToken } from './resolver.js';
-import type { Commit, EndToken, StartTag, StartToken } from './tokenizer.js';
+import type { EndToken, StartTag, StartToken } from './tokenizer.js';
 
 const browserApiSource = getApiSource();
 
@@ -55,7 +56,7 @@ function processEndTag(token: EndToken, controller: Controller): void {
 }
 
 interface CommitSettings {
-  mode: Commit;
+  mode: CommitMode;
   token: TaskToken;
   controller: Controller;
   partial: boolean;
