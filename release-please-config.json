@@ -2,9 +2,16 @@
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "release-type": "node",
   "tag-separator": "@",
-  "include-component-in-tag": true,
-  "separate-pull-requests": false,
   "bump-minor-pre-major": true,
+  "separate-pull-requests": false,
+  "include-component-in-tag": true,
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "all",
+      "components": ["htms-dom", "htms-js", "fastify-htms", "htms-server"]
+    }
+  ],
   "packages": {
     "packages/htms-dom": {
       "package-name": "htms-dom",
@@ -12,18 +19,15 @@
     },
     "packages/htms-js": {
       "package-name": "htms-js",
-      "changelog-path": "changelog.md",
-      "additional-paths": ["packages/htms-dom"]
+      "changelog-path": "changelog.md"
     },
     "packages/fastify-htms": {
       "package-name": "fastify-htms",
-      "changelog-path": "changelog.md",
-      "additional-paths": ["packages/htms-dom", "packages/htms-js"]
+      "changelog-path": "changelog.md"
     },
     "packages/htms-server": {
       "package-name": "htms-server",
-      "changelog-path": "changelog.md",
-      "additional-paths": ["packages/htms-dom", "packages/htms-js", "packages/fastify-htms"]
+      "changelog-path": "changelog.md"
     }
   },
   "changelog-sections": [
