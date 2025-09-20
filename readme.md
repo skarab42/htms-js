@@ -76,6 +76,57 @@ We'd love developers to:
 
 ---
 
+## Development
+
+Setup
+
+```bash
+git clone https://github.com/skarab42/htms-js.git
+cd htms-js
+pnpm i
+pnpm build
+```
+
+Common dev commands
+
+```bash
+# format + lint + typecheck + build + test
+pnpm check
+
+# run tests
+pnpm test
+pnpm test:watch
+
+# lint / format
+pnpm lint:check
+pnpm lint:fix
+pnpm format:check
+pnpm format:write
+
+# code coverage
+pnpm coverage
+
+# build all packages
+pnpm build
+```
+
+Run examples
+
+```bash
+# run from repo root, pick one:
+pnpm --filter server-example start # published dashboard demo at https://htms.skarab42.dev
+pnpm --filter hono-example start
+pnpm --filter fastify-example start
+pnpm --filter express-example start
+pnpm --filter stdout-example start
+```
+
+Reset workspace
+
+```bash
+pnpm reset
+```
+
 ## Contribute
 
 Help explore whether streaming HTML can be practical:
@@ -86,21 +137,6 @@ Help explore whether streaming HTML can be practical:
 - 🙏 [Open PRs](https://github.com/skarab42/htms-js/pulls)
 
 The only way to know where this works or breaks is to **try it together**.
-
-## Development
-
-```bash
-git clone https://github.com/skarab42/htms-js.git
-cd htms-js
-```
-
-```bash
-pnpm install    # install dependecies
-pnpm build      # build packages
-pnpm check      # check code quality
-pnpm test       # run tests
-pnpm test:watch # run test in watch mode
-```
 
 ---
 
