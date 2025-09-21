@@ -288,23 +288,31 @@ This gives you accessible announcements out of the box, without extra markup.
 
 ## Task API: `api.commit(...)`
 
-Use `api.commit(mode, html)` inside a task to push partial updates before the final return.
+Use `api.commit(html, options?)` inside a task to push partial updates before the final return.
 
 Minimal shape (JS):
 
 ```js
 // In a task: (value, api) => Promise<string>
-api.commit(mode, html); // mode: 'content' | 'append' | 'prepend' | 'before' | 'after'
+// default mode when options are omitted: 'append'
+api.commit('<div>chunk</div>');
+api.commit('<div>chunk</div>', { mode: 'append' }); // mode: 'content' | 'append' | 'prepend' | 'before' | 'after'
 ```
 
 Type definitions (TypeScript):
 
 ```ts
-export type Commit = 'replace' | 'content' | 'append' | 'prepend' | 'before' | 'after';
+export type CommitMode = 'replace' | 'content' | 'append' | 'prepend' | 'before' | 'after';
+
+export interface TaskApiOptions {
+  // Optional. If omitted, commit defaults to mode: 'append'.
+  mode?: Exclude<CommitMode, 'replace'>;
+}
 
 export interface TaskApi {
-  // 'replace' is reserved for the final return; partial commits use the other modes
-  commit(mode: Exclude<Commit, 'replace'>, html: string): void;
+  // 'replace' is not allowed for partial commits:
+  // the host's UUID anchors subsequent updates; replacing the host would break future commits.
+  commit(html: string, options?: TaskApiOptions): void;
 }
 
 export type Task<Value = unknown> = (value: Value, api: TaskApi) => PromiseLike<string>;
@@ -313,6 +321,8 @@ export type Task<Value = unknown> = (value: Value, api: TaskApi) => PromiseLike<
 Rules:
 
 - Allowed modes: `content`, `append`, `prepend`, `before`, `after` (not `replace`).
+- Default mode for partial commits when options are omitted: `append`.
+- Why not `replace`: partial commits must target the original host by UUID; replacing the host would drop that anchor and break subsequent commits.
 - Each `api.commit(...)` emits a partial chunk applied immediately on the client.
 - The final HTML is the task’s return value and uses the host’s `data-htms-commit`. With `data-htms-commit="append"`, returning `''` performs no DOM change (just cleanup).
 
@@ -329,11 +339,12 @@ Example (stream items with `append`):
 // tasks.js
 export async function loadFeed(_value, api) {
   // Clear the placeholder once (optional if already empty)
-  api.commit('content', '');
+  api.commit('', { mode: 'content' });
 
   // Any async iterable of items
   for await (const item of getFeedAsyncIterable()) {
-    api.commit('append', `<li>${item.title}</li>`);
+    // options omitted → defaults to 'append'
+    api.commit(`<li>${item.title}</li>`);
   }
 
   // Final empty return with host commit="append" → no DOM change, just cleanup
