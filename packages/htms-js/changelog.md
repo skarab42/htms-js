@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.0](https://github.com/skarab42/htms-js/compare/htms-js@v0.8.0...htms-js@v0.9.0) (2025-09-22)
+
+
+### ✨ Features
+
+* make `data-` attribute prefix optional ([#56](https://github.com/skarab42/htms-js/issues/56)) ([18036b2](https://github.com/skarab42/htms-js/commit/18036b2500bd5320fa3364268465b9f19753ba36))
+
+
+### 📝 Docs
+
+* fix task api ([#54](https://github.com/skarab42/htms-js/issues/54)) ([8bafaf4](https://github.com/skarab42/htms-js/commit/8bafaf4d9909d1b232ed4ae09dca09951147e281))
+
 ## [0.8.0](https://github.com/skarab42/htms-js/compare/htms-js@v0.7.0...htms-js@v0.8.0) (2025-09-20)
 
 
