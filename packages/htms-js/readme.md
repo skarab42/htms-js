@@ -132,6 +132,8 @@ pnpm --filter stdout-example start
 
 ## HTMS attributes
 
+> You can omit the `data-` prefix, though using it is more in line with standard HTML practices.
+
 ### Scoped modules (`data-htms-module`)
 
 HTMS supports scoped modules, meaning tasks can resolve from different modules depending on context. You can nest modules and HTMS will pick the right scope for each placeholder.

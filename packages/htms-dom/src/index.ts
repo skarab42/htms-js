@@ -56,7 +56,7 @@ export function commit(host: Element, html: string, mode: CommitMode): void {
 
 export function removeHtmsAttributes(host: Element): void {
   for (const attribute of host.attributes) {
-    if (attribute.name.startsWith('data-htms')) {
+    if (/^(data-)?htms/.test(attribute.name)) {
       host.removeAttribute(attribute.name);
     }
   }
@@ -102,5 +102,9 @@ export function setup(): void {
 export function cleanup(): void {
   for (const element of document.querySelectorAll('[data-htms-remove-on-cleanup]')) {
     element.remove();
+  }
+
+  for (const element of document.querySelectorAll('[htms-module], [data-htms-module]')) {
+    removeHtmsAttributes(element);
   }
 }

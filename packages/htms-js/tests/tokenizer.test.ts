@@ -134,6 +134,32 @@ describe('createHtmsTokenizer', () => {
     });
   });
 
+  it('should tokenize a simple html string with all attributes without `data-` prefix', async () => {
+    const uuidMock = 'uuid-test-0000-0000-mock';
+    mockRandomUUIDOnce(uuidMock);
+
+    const startTag = `<div htms="taskNameTest" htms-module="test-module.ts" htms-commit="replace" htms-value="{ life: 42 }">`;
+    const html = `${startTag}...</div>`;
+    const input = createStringStream(html);
+
+    const output = input.pipeThrough(createHtmsTokenizer());
+    const tokens = await collect(output);
+
+    expect(tokens).toHaveLength(3);
+    expect(tokens[0]).toMatchObject({
+      html: startTag,
+      tag: { tagName: 'div' },
+      type: 'htmsTag',
+      specifier: 'test-module.ts',
+      taskInfo: {
+        uuid: uuidMock,
+        commit: 'replace',
+        name: 'taskNameTest',
+        value: { life: 42 },
+      },
+    });
+  });
+
   it('should tokenize a simple html string with only [data-htms-module] attribute', async () => {
     const uuidMock = 'uuid-test-0000-0000-mock';
     mockRandomUUIDOnce(uuidMock);
