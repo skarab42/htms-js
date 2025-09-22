@@ -45,8 +45,8 @@ function parseCommitMode(commit: string | undefined): CommitMode {
 export interface TaskInfo {
   name: string;
   uuid: string;
-  commit: CommitMode;
   value: unknown;
+  commit: CommitMode;
 }
 
 export interface HtmsTagToken extends BaseToken {
@@ -78,6 +78,10 @@ export function mapAttributes(tag: StartTag): Map<string, string> {
 
 export type TokenizerStream = TransformStream<string | Buffer, Token>;
 
+function getAttribute(attributes: Map<string, string>, key: string): string | undefined {
+  return attributes.get(key) ?? attributes.get(`data-${key}`);
+}
+
 export function createHtmsTokenizer(): TokenizerStream {
   const rewriter = new RewritingStream();
   const tokenStack: StartToken[] = [];
@@ -95,20 +99,19 @@ export function createHtmsTokenizer(): TokenizerStream {
 
       rewriter.on('startTag', (tag, html) => {
         const attributes = mapAttributes(tag);
-
-        const dataHtms = attributes.get('data-htms');
-        const htmsModule = attributes.get('data-htms-module');
+        const dataHtms = getAttribute(attributes, 'htms');
+        const htmsModule = getAttribute(attributes, 'htms-module');
 
         if (dataHtms) {
           try {
-            const htmsCommit = attributes.get('data-htms-commit');
-            const htmsValue = attributes.get('data-htms-value');
+            const htmsValue = getAttribute(attributes, 'htms-value');
+            const htmsCommit = getAttribute(attributes, 'htms-commit');
 
             const taskInfo: TaskInfo = {
               name: dataHtms,
               uuid: randomUUID(),
-              commit: parseCommitMode(htmsCommit),
               value: parseValue(htmsValue),
+              commit: parseCommitMode(htmsCommit),
             };
 
             pushStartToken({ type: 'htmsTag', tag, html, taskInfo, specifier: htmsModule ?? scopes.at(-1) });
