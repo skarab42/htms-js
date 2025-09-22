@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/skarab42/htms-js/compare/htms-server@v0.8.0...htms-server@v0.9.0) (2025-09-22)
+
+
+### 🧹 Chores
+
+* **htms-server:** Synchronize all versions
+
 ## [0.8.0](https://github.com/skarab42/htms-js/compare/htms-server@v0.7.0...htms-server@v0.8.0) (2025-09-20)
 
 
