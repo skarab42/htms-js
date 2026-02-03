@@ -45,7 +45,7 @@
     "@fastify/compress": "^8.1.0",
     "@fastify/static": "^8.2.0",
     "cac": "^6.7.14",
-    "fastify": "^5.6.0",
+    "fastify": "^5.7.3",
     "fastify-htms": "workspace:*"
   },
   "packageManager": "pnpm@10.15.1",
