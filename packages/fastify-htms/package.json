@@ -40,7 +40,7 @@
   "dependencies": {
     "fastify-plugin": "^5.0.1",
     "htms-js": "workspace:*",
-    "minimatch": "^10.0.3"
+    "minimatch": "^10.2.3"
   },
   "devDependencies": {
     "fastify": "^5.6.0"
